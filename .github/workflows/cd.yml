@@ -1,0 +1,23 @@
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 18.x
+          cache: yarn
+
+      - run: yarn install --immutable
+      - run: nx build cdk
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: cdk
+          path: dist/packages/cdk
