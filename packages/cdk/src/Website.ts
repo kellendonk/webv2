@@ -7,10 +7,17 @@ import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import { RestApiOrigin, S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { DockerImageFunction } from 'aws-cdk-lib/aws-lambda';
 
-interface WebsiteProps {
+export interface WebsiteProps {
+  /**
+   * The directory containing the build output for the Next.js application.
+   * We expect a Dockerfile in the directory, so we can build a container.
+   */
   readonly distDir: string;
 }
 
+/**
+ * Responsible for creating the hosting for a nextjs site.
+ */
 export class Website extends Construct {
   readonly restApiOrigin: IOrigin;
   readonly assetsOrigin: IOrigin;
