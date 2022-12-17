@@ -30,6 +30,8 @@ jobs:
     needs: build
     runs-on: ubuntu-22.04
 
+    environment: test
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -44,4 +46,11 @@ jobs:
           name: cdk
           path: cdk.out
 
-      - run: tree
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ca-central-1
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          role-session-name: GitHubActions
+
+      - run: cdk deploy --require-approval never --app cdk.out/assembly-WebStage-Test
