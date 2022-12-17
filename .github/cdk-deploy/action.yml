@@ -32,5 +32,5 @@ runs:
         aws-region: ca-central-1
         role-to-assume: ${{ inputs.aws-role }}
 
-    - run: cdk deploy --require-approval never --app ${{ inputs.app }}
+    - run: cdk deploy --require-approval never --method direct --app ${{ inputs.app }}
       shell: bash
