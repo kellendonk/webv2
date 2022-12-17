@@ -30,7 +30,7 @@ runs:
       with:
         role-session-name: GitHubActions
         aws-region: ca-central-1
-        role-to-assume: ${{ input.aws-role }}
+        role-to-assume: ${{ inputs.aws-role }}
 
-    - run: cdk deploy --require-approval never --app ${{ input.app }}
+    - run: cdk deploy --require-approval never --app ${{ inputs.app }}
       shell: bash
