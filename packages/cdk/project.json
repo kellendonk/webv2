@@ -21,15 +21,17 @@
       ]
     },
     "serve": {
-      "executor": "@nrwl/js:node",
+      "executor": "nx:run-commands",
       "options": {
-        "buildTarget": "cdk:build"
+        "commands": [
+          {
+            "command": "cdk --app \"ts-node -P packages/cdk/tsconfig.app.json packages/cdk/src/main.ts\" watch Kellendonk-Test/**"
+          }
+        ]
       },
-      "configurations": {
-        "production": {
-          "buildTarget": "cdk:build:production"
-        }
-      }
+      "dependsOn": [
+        "^build"
+      ]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

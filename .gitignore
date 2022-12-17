@@ -43,3 +43,6 @@ Thumbs.db
 
 # NX Cloud
 /nx-cloud.env
+
+# Extra CDK stuff
+/cdk.out
