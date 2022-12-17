@@ -6,6 +6,7 @@ import { Cdn } from './Cdn';
 /**
  * Responsible for creating website stacks and wiring up their constructs.
  *
+ * ```
  *          ┌────────────────────────────┐
  *          │Content Distribution Network│
  *          │       <<cloudfront>>       │
@@ -22,6 +23,7 @@ import { Cdn } from './Cdn';
  *   │                  Website                     │
  *   └──────────────────────────────────────────────┘
  *    Modify by copy/paste via https://asciiflow.com
+ * ```
  */
 export class WebStage extends Stage {
   constructor(scope: Construct, id: string, props?: StageProps) {
