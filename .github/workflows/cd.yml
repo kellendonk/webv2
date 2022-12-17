@@ -41,23 +41,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+
+      - uses: ./.github/cdk-deploy
         with:
-          node-version: 18.x
-          cache: npm
-
-      - run: npm i -g aws-cdk@2
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: cdk
-          path: cdk.out
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: ca-central-1
-          role-to-assume: ${{ secrets.AWS_ROLE }}
-          role-session-name: GitHubActions
-
-      - run: cdk deploy --require-approval never --app cdk.out/assembly-Kellendonk-Test
+          app: cdk.out/assembly-Kellendonk-Test
+          aws-role: ${{ secrets.AWS_ROLE }}

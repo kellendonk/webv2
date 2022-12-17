@@ -1,0 +1,36 @@
+name: CDK Deploy
+description: Deploy CDK stack
+
+inputs:
+  app:
+    description: Path to the CDK app
+    required: true
+  aws-role:
+    description: The AWS role to assume
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: npm
+
+    - run: npm i -g aws-cdk@2
+      shell: bash
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: cdk
+        path: cdk.out
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-session-name: GitHubActions
+        aws-region: ca-central-1
+        role-to-assume: ${{ input.aws-role }}
+
+    - run: cdk deploy --require-approval never --app ${{ input.app }}
+      shell: bash
