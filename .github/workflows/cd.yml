@@ -60,4 +60,4 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           role-session-name: GitHubActions
 
-      - run: cdk deploy --require-approval never --app cdk.out/assembly-WebStage-Test
+      - run: cdk deploy --require-approval never --app cdk.out/assembly-Kellendonk-Test
