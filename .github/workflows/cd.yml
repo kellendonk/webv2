@@ -25,3 +25,23 @@ jobs:
           name: cdk
           path: dist/packages/cdk
           retention-days: 1
+
+  release_test:
+    needs: build
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: npm
+
+      - run: npm i -g aws-cdk@2
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: cdk
+          path: cdk.out
+
+      - run: tree
