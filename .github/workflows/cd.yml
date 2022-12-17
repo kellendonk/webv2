@@ -33,6 +33,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     environment: test
+    concurrency: test
 
     permissions:
       # cdk-deploy needs this
