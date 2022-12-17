@@ -18,7 +18,7 @@ jobs:
           cache: yarn
 
       - run: yarn install --immutable
-      - run: nx build cdk
+      - run: yarn nx build cdk
 
       - uses: actions/upload-artifact@v3
         with:
