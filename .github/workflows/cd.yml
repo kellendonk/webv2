@@ -52,7 +52,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: ca-central-1
-          role-to-assume: ${{ secret.AWS_ROLE }}
+          role-to-assume: ${{ secrets.AWS_ROLE }}
           role-session-name: GitHubActions
 
       - run: cdk deploy --require-approval never --app cdk.out/assembly-WebStage-Test
