@@ -42,7 +42,7 @@ export class WebStage extends Stage {
       },
     });
 
-    new CfnOutput(stack, 'CdnDomainName', {
+    new CfnOutput(stack, 'Url', {
       value: `https://${cdn.domainName}/`,
     });
   }
