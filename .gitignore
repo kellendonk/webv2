@@ -46,3 +46,5 @@ Thumbs.db
 
 # Extra CDK stuff
 /cdk.out
+
+/.eslintcache

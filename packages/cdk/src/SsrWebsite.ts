@@ -1,4 +1,9 @@
-import { AssetStaging, aws_cloudfront, aws_lambda, Duration } from 'aws-cdk-lib';
+import {
+  AssetStaging,
+  aws_cloudfront,
+  aws_lambda,
+  Duration,
+} from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import {
   CacheCookieBehavior,
@@ -105,7 +110,10 @@ export class SsrWebsiteCdn extends Construct {
       cookieBehavior: CacheCookieBehavior.none(),
     });
 
-    const code = fs.readFileSync(path.join(__dirname, 'SsrWebsite.ViewerRequest.js'), 'utf8');
+    const code = fs.readFileSync(
+      path.join(__dirname, 'SsrWebsite.ViewerRequest.js'),
+      'utf8',
+    );
 
     const viewerRequest = new aws_cloudfront.Function(this, 'ViewerRequest', {
       functionName: [...this.node.path.split('/'), 'ViewerRequest'].join('-'),
@@ -139,6 +147,12 @@ export class SsrWebsiteCdn extends Construct {
   }
 }
 
-export function scriptSub(script: string, props: Record<string, string>): string {
-  return Object.entries(props).reduce((acc, [k, v]) => acc.replace(new RegExp(`\\{\\{${k}\\}\\}`, 'g'), v), script);
+export function scriptSub(
+  script: string,
+  props: Record<string, string>,
+): string {
+  return Object.entries(props).reduce(
+    (acc, [k, v]) => acc.replace(new RegExp(`\\{\\{${k}\\}\\}`, 'g'), v),
+    script,
+  );
 }
