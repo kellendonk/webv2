@@ -2,22 +2,26 @@ import React from 'react';
 import { HeroSection, HeroTitle } from '../../components/HeroSection';
 import { MainLayout } from '../../components/MainLayout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub, faMastodon } from '@fortawesome/free-brands-svg-icons';
+import {
+  faGithub,
+  faMastodon,
+  faTwitter,
+} from '@fortawesome/free-brands-svg-icons';
 import Link from 'next/link';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import Head from 'next/head';
+import { faHouse } from '@fortawesome/free-solid-svg-icons';
 
 export function Page() {
-  interface TreeLinkProps {
+  type TreeLinkProps = React.PropsWithChildren<{
     href: string;
     icon: IconProp;
-    text: string;
-  }
+  }>;
 
   const TreeLink = (props: TreeLinkProps) => (
-    <Link href={props.href} className="flex flex-col text-2xl">
+    <Link href={props.href} className="flex flex-col text-2xl flex-grow">
       <FontAwesomeIcon icon={props.icon} className="text-[75px]" />
-      {props.text}
+      <div className="mt-4">{props.children}</div>
     </Link>
   );
 
@@ -36,17 +40,23 @@ export function Page() {
           <span className="text-[#ED3125] sm:whitespace-nowrap">links</span>
         </HeroTitle>
 
-        <div className="flex flex-wrap justify-center gap-10 mt-20 px-10">
-          <TreeLink
-            icon={faGithub}
-            text="GitHub"
-            href="https://github.com/misterjoshua"
-          />
+        <div className="flex flex-wrap justify-between gap-10 mt-20 px-10 max-w-2xl mx-auto">
+          <TreeLink href="/" icon={faHouse}>
+            Homepage
+          </TreeLink>
+          <TreeLink icon={faGithub} href="https://github.com/misterjoshua">
+            GitHub
+          </TreeLink>
           <TreeLink
             icon={faMastodon}
-            text="Mastodon"
             href="https://fosstodon.org/@misterjoshua"
-          />
+          >
+            Mastodon
+          </TreeLink>
+          <TreeLink href="https://twitter.com/eigenseries" icon={faTwitter}>
+            Twitter
+            <em className="block text-sm">Deprecated</em>
+          </TreeLink>
         </div>
       </HeroSection>
     </MainLayout>
