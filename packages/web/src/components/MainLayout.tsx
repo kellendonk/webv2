@@ -3,6 +3,7 @@ import Link from 'next/link';
 import clsx from 'clsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import logo from '../assets/logo-mark.svg';
 
 export const MainLayout: React.FC<React.PropsWithChildren<{}>> = ({
   children,
@@ -27,7 +28,7 @@ export const MainLayout: React.FC<React.PropsWithChildren<{}>> = ({
               <div className="hidden md:flex md:gap-x-5">
                 <Link aria-label="Home" href="/" className="flex items-center">
                   <img
-                    src="/k.svg"
+                    src={logo}
                     width="50"
                     height="50"
                     alt="The Letter K with fire coming out of it"
