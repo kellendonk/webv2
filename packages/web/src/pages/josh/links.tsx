@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faMastodon } from '@fortawesome/free-brands-svg-icons';
 import Link from 'next/link';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import Head from 'next/head';
 
 export function Page() {
   interface TreeLinkProps {
@@ -22,6 +23,13 @@ export function Page() {
 
   return (
     <MainLayout>
+      <Head>
+        <title>Josh&apos;s Links</title>
+        <meta
+          name="description"
+          content="Links to Josh's various online profiles."
+        />
+      </Head>
       <HeroSection>
         <HeroTitle>
           Josh&apos;s{' '}
