@@ -1,9 +1,6 @@
 {
   "app": "ts-node -P packages/cdk/tsconfig.app.json packages/cdk/src/main.ts",
   "watch": {
-    "include": [
-      "packages/cdk/src/**",
-      "packages/web/**"
-    ]
+    "include": ["packages/cdk/src/**", "packages/web/**"]
   }
 }

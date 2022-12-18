@@ -7,10 +7,7 @@ export function Page() {
     <MainLayout>
       <HeroSection>
         <HeroTitle>
-          Home page for{' '}
-          <span className="text-[#ED3125] sm:whitespace-nowrap">
-            many things
-          </span>
+          Home page for <span className="text-[#ED3125] sm:whitespace-nowrap">many things</span>
         </HeroTitle>
 
         <p className="text-xl py-14">Though, none of it is here yet. Check back later.</p>
