@@ -12,7 +12,7 @@ export const MainLayout: React.FC<React.PropsWithChildren<{}>> = ({
     <Link
       href={props.href}
       className={clsx([
-        'rounded-lg py-1 px-2 text-lg underline text-slate-700 hover:bg-slate-100 hover:text-slate-900 flex items-center gap-2',
+        'rounded-lg py-1 px-2 text-lg text-slate-700 hover:bg-slate-100 hover:text-slate-900 flex items-center gap-2',
       ])}
     >
       {props.children}
@@ -26,28 +26,29 @@ export const MainLayout: React.FC<React.PropsWithChildren<{}>> = ({
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <nav className="relative z-50 flex justify-between">
               <div className="hidden md:flex md:gap-x-5">
-                <Link aria-label="Home" href="/" className="flex items-center">
+                <Link aria-label="Home" href="/" className="flex items-center mr-10">
                   <img
                     src={logo}
                     width="50"
                     height="50"
-                    alt="The Letter K with fire coming out of it"
+                    alt="The Letter K"
                   />
-                  is for Kellendonk
+                  for Kellendonk
                 </Link>
 
-                <NavTextLink href="/">Home</NavTextLink>
+
+              </div>
+
+              <div className="flex items-center gap-x-5 md:gap-x-8">
                 <NavTextLink href="https://github.com/misterjoshua">
                   <FontAwesomeIcon icon={faGithub} width={20} />
-                  Josh
+                  @misterjoshua
                 </NavTextLink>
                 <NavTextLink href="https://github.com/lineape">
                   <FontAwesomeIcon icon={faGithub} width={20} />
-                  Eli
+                  @lineape
                 </NavTextLink>
               </div>
-
-              <div className="flex items-center gap-x-5 md:gap-x-8"></div>
             </nav>
           </div>
         </header>
