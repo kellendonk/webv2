@@ -12,7 +12,7 @@
       "options": {
         "commands": [
           {
-            "command": "cdk --app \"ts-node -P packages/cdk/tsconfig.app.json packages/cdk/src/main.ts\" synth -o dist/packages/cdk"
+            "command": "cdk synth -o dist/packages/cdk"
           }
         ]
       },
@@ -25,7 +25,7 @@
       "options": {
         "commands": [
           {
-            "command": "cdk --app \"ts-node -P packages/cdk/tsconfig.app.json packages/cdk/src/main.ts\" watch Kellendonk-Test/**"
+            "command": "cdk watch Kellendonk-Test/** -o dist/packages/cdk"
           }
         ]
       },

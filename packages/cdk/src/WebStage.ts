@@ -1,7 +1,6 @@
 import { CfnOutput, Stack, Stage, StageProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { Website } from './Website';
-import { Cdn } from './Cdn';
+import { SsrWebsite, SsrWebsiteCdn } from './SsrWebsite';
 
 /**
  * Responsible for creating website stacks and wiring up their constructs.
@@ -31,17 +30,12 @@ export class WebStage extends Stage {
 
     const stack = new Stack(this, 'Stack');
 
-    const website = new Website(stack, 'Website', {
+    const website = new SsrWebsite(stack, 'Website', {
       distDir: 'dist/packages/web',
     });
 
-    const cdn = new Cdn(stack, 'Cdn', {
-      defaultOrigin: website.restApiOrigin,
-      additionalBehaviors: {
-        '_next/static': {
-          origin: website.assetsOrigin,
-        },
-      },
+    const cdn = new SsrWebsiteCdn(stack, 'Cdn', {
+      website,
     });
 
     new CfnOutput(stack, 'Url', {
