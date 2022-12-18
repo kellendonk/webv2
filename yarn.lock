@@ -2759,6 +2759,11 @@
     "@webassemblyjs/ast" "1.11.1"
     "@xtuc/long" "4.2.2"
 
+"@wheatstalk/cdk-lambda-blowtorch@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@wheatstalk/cdk-lambda-blowtorch/-/cdk-lambda-blowtorch-0.0.1.tgz#b7d7757e817bad732a1169247a25835746cddabf"
+  integrity sha512-ciVuUMau1sabwxjL33ymna5OEN3vNkiRKcXWZKEmBFqjexqwHDXpFVR8GXVzhidJYc6IhJmM9gcdjZMzXZsrAw==
+
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@xtuc/ieee754/-/ieee754-1.2.0.tgz#eef014a3145ae477a1cbc00cd1e552336dceb790"

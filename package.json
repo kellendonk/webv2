@@ -43,6 +43,7 @@
     "@types/react-dom": "18.0.9",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
+    "@wheatstalk/cdk-lambda-blowtorch": "^0.0.1",
     "aws-cdk": "^2.55.1",
     "aws-cdk-lib": "^2.55.1",
     "babel-jest": "28.1.1",
