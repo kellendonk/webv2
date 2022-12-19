@@ -21,7 +21,7 @@
       "options": {
         "commands": [
           {
-            "command": "cdk watch Kellendonk-Test/** -o dist/packages/cdk"
+            "command": "cdk watch Kellendonk-Dev/** -o dist/packages/cdk"
           }
         ]
       },

@@ -3,8 +3,23 @@ import { WebStage } from './WebStage';
 
 const app = new App();
 
-new WebStage(app, 'Kellendonk-Test');
+new WebStage(app, 'Kellendonk-Dev');
 
-new WebStage(app, 'Kellendonk-Production');
+new WebStage(app, 'Kellendonk-Test', {
+  domain: {
+    domainName: 'test.kellendonk.ca',
+    hostedZoneId: 'Z04480822SF8LKAO9VKJ5',
+    hostedZoneName: 'kellendonk.ca',
+  },
+});
+
+new WebStage(app, 'Kellendonk-Production', {
+  domain: {
+    domainName: 'www.kellendonk.ca',
+    secondaryNames: ['kellendonk.ca'],
+    hostedZoneId: 'Z04480822SF8LKAO9VKJ5',
+    hostedZoneName: 'kellendonk.ca',
+  },
+});
 
 app.synth();

@@ -1,7 +1,10 @@
 import {
   AssetStaging,
+  aws_certificatemanager,
   aws_cloudfront,
   aws_lambda,
+  aws_route53,
+  aws_route53_targets,
   Duration,
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
@@ -22,6 +25,8 @@ import { DockerImageCode, DockerImageFunction } from 'aws-cdk-lib/aws-lambda';
 import * as fs from 'fs';
 import * as path from 'path';
 import { LambdaBlowtorch } from '@wheatstalk/cdk-lambda-blowtorch';
+import { RecordTarget } from 'aws-cdk-lib/aws-route53';
+import { API_GATEWAY_REQUEST } from './events';
 
 export interface SsrWebsiteProps {
   /**
@@ -100,10 +105,17 @@ export class SsrWebsite extends Construct {
 
 export interface SsrWebsiteCdnProps {
   readonly website: SsrWebsite;
+
+  /** Domain configuration */
+  readonly domainConfig?: {
+    certificate: aws_certificatemanager.ICertificate;
+    domainNames: string[];
+  };
 }
 
 export class SsrWebsiteCdn extends Construct {
-  readonly domainName: string;
+  readonly cdnDomainName: string;
+  readonly recordTarget: RecordTarget;
 
   constructor(scope: Construct, id: string, props: SsrWebsiteCdnProps) {
     super(scope, id);
@@ -138,6 +150,8 @@ export class SsrWebsiteCdn extends Construct {
       priceClass: PriceClass.PRICE_CLASS_100,
       enableIpv6: true,
       enableLogging: true,
+      certificate: props.domainConfig?.certificate,
+      domainNames: props.domainConfig?.domainNames,
       defaultBehavior: {
         origin: website.restApiOrigin,
         cachePolicy,
@@ -153,7 +167,10 @@ export class SsrWebsiteCdn extends Construct {
       },
     });
 
-    this.domainName = distribution.distributionDomainName;
+    this.cdnDomainName = distribution.distributionDomainName;
+    this.recordTarget = aws_route53.RecordTarget.fromAlias(
+      new aws_route53_targets.CloudFrontTarget(distribution),
+    );
   }
 }
 
@@ -166,86 +183,3 @@ export function scriptSub(
     script,
   );
 }
-
-const API_GATEWAY_REQUEST = {
-  resource: '/',
-  path: '/',
-  httpMethod: 'GET',
-  headers: {
-    accept:
-      'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-    'accept-encoding': 'gzip, deflate, br',
-    'accept-language': 'en-US,en;q=0.9',
-    cookie: 's_fid=7AAB6XMPLAFD9BBF-0643XMPL09956DE2; regStatus=pre-register',
-    Host: '70ixmpl4fl.execute-api.us-east-2.amazonaws.com',
-    'sec-fetch-dest': 'document',
-    'sec-fetch-mode': 'navigate',
-    'sec-fetch-site': 'none',
-    'upgrade-insecure-requests': '1',
-    'User-Agent':
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36',
-    'X-Amzn-Trace-Id': 'Root=1-5e66d96f-7491f09xmpl79d18acf3d050',
-    'X-Forwarded-For': '52.255.255.12',
-    'X-Forwarded-Port': '443',
-    'X-Forwarded-Proto': 'https',
-  },
-  multiValueHeaders: {
-    accept: [
-      'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-    ],
-    'accept-encoding': ['gzip, deflate, br'],
-    'accept-language': ['en-US,en;q=0.9'],
-    cookie: [
-      's_fid=7AABXMPL1AFD9BBF-0643XMPL09956DE2; regStatus=pre-register;',
-    ],
-    Host: ['70ixmpl4fl.execute-api.ca-central-1.amazonaws.com'],
-    'sec-fetch-dest': ['document'],
-    'sec-fetch-mode': ['navigate'],
-    'sec-fetch-site': ['none'],
-    'upgrade-insecure-requests': ['1'],
-    'User-Agent': [
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36',
-    ],
-    'X-Amzn-Trace-Id': ['Root=1-5e66d96f-7491f09xmpl79d18acf3d050'],
-    'X-Forwarded-For': ['52.255.255.12'],
-    'X-Forwarded-Port': ['443'],
-    'X-Forwarded-Proto': ['https'],
-  },
-  queryStringParameters: null,
-  multiValueQueryStringParameters: null,
-  pathParameters: null,
-  stageVariables: null,
-  requestContext: {
-    resourceId: '2gxmpl',
-    resourcePath: '/',
-    httpMethod: 'GET',
-    extendedRequestId: 'JJbxmplHYosFVYQ=',
-    requestTime: '10/Mar/2020:00:03:59 +0000',
-    path: '/Prod/',
-    accountId: '123456789012',
-    protocol: 'HTTP/1.1',
-    stage: 'Prod',
-    domainPrefix: '70ixmpl4fl',
-    requestTimeEpoch: 1583798639428,
-    requestId: '77375676-xmpl-4b79-853a-f982474efe18',
-    identity: {
-      cognitoIdentityPoolId: null,
-      accountId: null,
-      cognitoIdentityId: null,
-      caller: null,
-      sourceIp: '52.255.255.12',
-      principalOrgId: null,
-      accessKey: null,
-      cognitoAuthenticationType: null,
-      cognitoAuthenticationProvider: null,
-      userArn: null,
-      userAgent:
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36',
-      user: null,
-    },
-    domainName: '70ixmpl4fl.execute-api.us-east-2.amazonaws.com',
-    apiId: '70ixmpl4fl',
-  },
-  body: null,
-  isBase64Encoded: false,
-};
