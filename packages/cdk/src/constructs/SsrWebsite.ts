@@ -146,6 +146,7 @@ export class SsrWebsiteCdn extends Construct {
       priceClass: aws_cloudfront.PriceClass.PRICE_CLASS_100,
       enableIpv6: true,
       enableLogging: true,
+      httpVersion: aws_cloudfront.HttpVersion.HTTP2_AND_3,
       defaultBehavior: {
         origin: website.ssrOrigin,
         cachePolicy,
