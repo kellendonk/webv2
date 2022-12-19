@@ -46,7 +46,8 @@ export function Page() {
           <div className="shrink text-left">
             <Para>
               I&apos;m a Cloud Solutions Architect and Software Developer from
-              Calgary, Alberta 🇨🇦. I am intimately familiar with the AWS cloud.
+              Calgary, Alberta 🇨🇦. I am intimately familiar with both the AWS
+              cloud and Kubernetes.
             </Para>
             <Para>
               Most days, you can find me hacking on a SaaS product or helping my
