@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { HeroSection, HeroTitle } from '../../components/HeroSection';
+import React, { HTMLAttributes, useEffect, useState } from 'react';
+import { HeroTitle } from '../../components/HeroTitle';
 import { MainLayout } from '../../components/MainLayout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -15,6 +15,10 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import Head from 'next/head';
 import { GradientText } from '../../components/GradientText';
 
+import joshProfile from '../../assets/josh-profile.jpg';
+import Image from 'next/image';
+import clsx from 'clsx';
+
 export function Page() {
   return (
     <MainLayout>
@@ -25,7 +29,42 @@ export function Page() {
           content="Links to Josh's various online profiles."
         />
       </Head>
-      <HeroSection>
+
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10 pt-20 text-center lg:py-16 lg:pt-32">
+        <HeroTitle>
+          Hi I&apos;m <GradientText>Josh</GradientText>
+        </HeroTitle>
+
+        <div className="flex mt-16 justify-center items-center gap-8 md:gap-16 flex-wrap md:flex-nowrap">
+          <Image
+            src={joshProfile}
+            alt="Josh's Picture"
+            width="250"
+            height="250"
+            className="rounded-full"
+          />
+          <div className="shrink text-left">
+            <Para>
+              I&apos;m a Cloud Solutions Architect and Software Developer from
+              Calgary, Alberta 🇨🇦. I am intimately familiar with the AWS cloud.
+            </Para>
+            <Para>
+              Most days, you can find me hacking on a SaaS product or helping my
+              team deliver top-quality products. My most-used programming
+              languages in 2022 were: TypeScript, Go, and Python.
+            </Para>
+            <Para>
+              Lately, I&apos;ve been exploring ways to increase the
+              manageability of cloud-based projects. I aim to reduce the
+              cognitive burden of using cloud products. As you might imagine,
+              I&apos;ve been closely following developments in the emerging
+              Infrastructure from Code movement.
+            </Para>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10 text-center lg:py-16">
         <HeroTitle>
           Josh&apos;s <GradientText>online profiles</GradientText>
         </HeroTitle>
@@ -59,7 +98,7 @@ export function Page() {
             Twitter
           </TreeLink>
         </div>
-      </HeroSection>
+      </section>
     </MainLayout>
   );
 }
@@ -105,3 +144,9 @@ const TreeLink = (props: TreeLinkProps) => {
     </div>
   );
 };
+
+const Para = (props: HTMLAttributes<HTMLParagraphElement>) => (
+  <p {...props} className={clsx('my-6 leading-7', props.className)}>
+    {props.children}
+  </p>
+);

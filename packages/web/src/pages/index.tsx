@@ -1,6 +1,6 @@
 import React from 'react';
 import { MainLayout } from '../components/MainLayout';
-import { HeroSection, HeroTitle } from '../components/HeroSection';
+import { HeroTitle } from '../components/HeroTitle';
 import Head from 'next/head';
 import { GradientText } from '../components/GradientText';
 
@@ -14,7 +14,8 @@ export function Page() {
           content="The web home of the Kellendonks. Find anything officially related to the Kellendonks here."
         />
       </Head>
-      <HeroSection>
+
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-20 text-center lg:py-32">
         <HeroTitle>
           Home page for <GradientText>many things</GradientText>
         </HeroTitle>
@@ -22,7 +23,7 @@ export function Page() {
         <p className="text-xl py-14">
           Though, none of it is here yet. Check back later.
         </p>
-      </HeroSection>
+      </section>
     </MainLayout>
   );
 }
