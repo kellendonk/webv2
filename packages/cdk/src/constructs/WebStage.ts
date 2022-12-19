@@ -46,10 +46,7 @@ export class WebStage extends Stage {
 
     const cdn = new SsrWebsiteCdn(stack, 'Cdn', {
       website,
-      domainConfig: domainConfig && {
-        domainNames: domainConfig.domainNames,
-        certificate: domainConfig.certificate,
-      },
+      domainConfig,
     });
 
     domainConfig?.createDnsRecords(stack, 'DnsRecords', cdn.recordTarget);

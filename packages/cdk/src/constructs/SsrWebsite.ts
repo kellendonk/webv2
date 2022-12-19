@@ -20,6 +20,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { API_GATEWAY_REQUEST } from './events';
+import { DomainConfig } from './DomainConfig';
 
 export interface SsrWebsiteProps {
   /**
@@ -102,10 +103,7 @@ export interface SsrWebsiteCdnProps {
   readonly website: SsrWebsite;
 
   /** Domain configuration */
-  readonly domainConfig?: {
-    certificate: aws_certificatemanager.ICertificate;
-    domainNames: string[];
-  };
+  readonly domainConfig?: DomainConfig;
 }
 
 export class SsrWebsiteCdn extends Construct {
@@ -115,7 +113,7 @@ export class SsrWebsiteCdn extends Construct {
   constructor(scope: Construct, id: string, props: SsrWebsiteCdnProps) {
     super(scope, id);
 
-    const { website } = props;
+    const { website, domainConfig } = props;
 
     const cachePolicy = new aws_cloudfront.CachePolicy(this, 'SSRCachePolicy', {
       minTtl: Duration.seconds(1),
@@ -144,11 +142,10 @@ export class SsrWebsiteCdn extends Construct {
     });
 
     const distribution = new aws_cloudfront.Distribution(this, 'Distribution', {
+      ...this.domainConfigDistributionProps(domainConfig),
       priceClass: aws_cloudfront.PriceClass.PRICE_CLASS_100,
       enableIpv6: true,
       enableLogging: true,
-      certificate: props.domainConfig?.certificate,
-      domainNames: props.domainConfig?.domainNames,
       defaultBehavior: {
         origin: website.ssrOrigin,
         cachePolicy,
@@ -166,6 +163,21 @@ export class SsrWebsiteCdn extends Construct {
           origin: website.assetsOrigin,
           viewerProtocolPolicy:
             aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          responseHeadersPolicy: new aws_cloudfront.ResponseHeadersPolicy(
+            this,
+            'StaticResponseHeadersPolicy',
+            {
+              customHeadersBehavior: {
+                customHeaders: [
+                  {
+                    header: 'Cache-Control',
+                    value: 'public,max-age=31536000,immutable',
+                    override: true,
+                  },
+                ],
+              },
+            },
+          ),
         },
       },
     });
@@ -174,6 +186,28 @@ export class SsrWebsiteCdn extends Construct {
     this.recordTarget = aws_route53.RecordTarget.fromAlias(
       new aws_route53_targets.CloudFrontTarget(distribution),
     );
+  }
+
+  private domainConfigDistributionProps(
+    domainConfig: DomainConfig,
+  ): Partial<aws_cloudfront.DistributionProps> {
+    if (!domainConfig) {
+      return {};
+    }
+
+    return {
+      domainNames: domainConfig.allDomainNames,
+      certificate: new aws_certificatemanager.DnsValidatedCertificate(
+        this,
+        'Domain',
+        {
+          domainName: domainConfig.domainName,
+          subjectAlternativeNames: domainConfig.secondaryDomainNames,
+          hostedZone: domainConfig.hostedZone,
+          region: 'us-east-1',
+        },
+      ),
+    };
   }
 }
 

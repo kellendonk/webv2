@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { aws_certificatemanager, aws_route53 } from 'aws-cdk-lib';
+import { aws_route53 } from 'aws-cdk-lib';
 import { RecordTarget } from 'aws-cdk-lib/aws-route53';
 
 export interface DomainConfigProps {
@@ -12,8 +12,8 @@ export interface DomainConfigProps {
 export class DomainConfig extends Construct {
   readonly domainName: string;
   readonly secondaryDomainNames: string[];
-  readonly certificate: aws_certificatemanager.ICertificate;
-  readonly domainNames: string[];
+
+  readonly allDomainNames: string[];
   readonly hostedZone: aws_route53.IHostedZone;
 
   constructor(scope: Construct, id: string, props: DomainConfigProps) {
@@ -21,7 +21,7 @@ export class DomainConfig extends Construct {
 
     this.domainName = props.domainName;
     this.secondaryDomainNames = props.secondaryNames ?? [];
-    this.domainNames = [this.domainName, ...this.secondaryDomainNames];
+    this.allDomainNames = [this.domainName, ...this.secondaryDomainNames];
 
     this.hostedZone = aws_route53.HostedZone.fromHostedZoneAttributes(
       this,
@@ -31,22 +31,11 @@ export class DomainConfig extends Construct {
         zoneName: props.hostedZoneName,
       },
     );
-
-    this.certificate = new aws_certificatemanager.DnsValidatedCertificate(
-      this,
-      'Domain',
-      {
-        domainName: this.domainName,
-        subjectAlternativeNames: this.secondaryDomainNames,
-        hostedZone: this.hostedZone,
-        region: 'us-east-1',
-      },
-    );
   }
 
   createDnsRecords(stack: Construct, id: string, target: RecordTarget) {
     new NameRecords(stack, 'DnsRecords', {
-      domainNames: this.domainNames,
+      domainNames: this.allDomainNames,
       zone: this.hostedZone,
       target,
     });
