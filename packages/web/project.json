@@ -23,6 +23,7 @@
         "root": "packages/web",
         "outputPath": "dist/packages/web"
       },
+      "includeDevDependenciesInPackageJson": true,
       "configurations": {
         "development": {
           "outputPath": "packages/web"

@@ -15,7 +15,7 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import Head from 'next/head';
 import { GradientText } from '../../components/GradientText';
 
-import joshProfile from '../../assets/josh-profile.jpg';
+import joshProfile from '../../../public/josh-profile.jpg';
 import Image from 'next/image';
 import clsx from 'clsx';
 

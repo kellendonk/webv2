@@ -1,7 +1,6 @@
 import { LambdaBlowtorch } from '@wheatstalk/cdk-lambda-blowtorch';
 import {
   AssetStaging,
-  aws_apigateway,
   aws_certificatemanager,
   aws_cloudfront,
   aws_cloudfront_origins,
@@ -11,8 +10,11 @@ import {
   aws_s3,
   aws_s3_deployment,
   Duration,
+  Stack,
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+import * as aws_apigatewayv2 from '@aws-cdk/aws-apigatewayv2-alpha';
+import * as aws_apigatewayv2_integration from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -34,7 +36,7 @@ export class SsrWebsite extends Construct {
   /**
    * The REST API origin where the lambda handlers reside.
    */
-  readonly restApiOrigin: aws_cloudfront.IOrigin;
+  readonly ssrOrigin: aws_cloudfront.IOrigin;
 
   /**
    * The assets origin where all static assets live.
@@ -70,12 +72,12 @@ export class SsrWebsite extends Construct {
       warmingPayload: JSON.stringify(API_GATEWAY_REQUEST),
     });
 
-    const restApi = new aws_apigateway.LambdaRestApi(this, 'Api', {
-      handler,
-      deployOptions: {
-        tracingEnabled: true,
-        loggingLevel: aws_apigateway.MethodLoggingLevel.INFO,
-      },
+    const httpApi = new aws_apigatewayv2.HttpApi(this, 'HttpApi', {
+      defaultIntegration:
+        new aws_apigatewayv2_integration.HttpLambdaIntegration(
+          'Handler',
+          handler,
+        ),
     });
 
     const assets = new aws_s3.Bucket(this, 'Assets');
@@ -90,7 +92,9 @@ export class SsrWebsite extends Construct {
     });
 
     this.assetsOrigin = new aws_cloudfront_origins.S3Origin(assets);
-    this.restApiOrigin = new aws_cloudfront_origins.RestApiOrigin(restApi);
+    this.ssrOrigin = new aws_cloudfront_origins.HttpOrigin(
+      `${httpApi.apiId}.execute-api.${Stack.of(this).region}.amazonaws.com`,
+    );
   }
 }
 
@@ -146,7 +150,7 @@ export class SsrWebsiteCdn extends Construct {
       certificate: props.domainConfig?.certificate,
       domainNames: props.domainConfig?.domainNames,
       defaultBehavior: {
-        origin: website.restApiOrigin,
+        origin: website.ssrOrigin,
         cachePolicy,
         functionAssociations: [
           {
