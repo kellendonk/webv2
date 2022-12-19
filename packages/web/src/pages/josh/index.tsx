@@ -56,9 +56,9 @@ export function Page() {
             <Para>
               Lately, I&apos;ve been exploring ways to increase the
               manageability of cloud-based projects. I aim to reduce the
-              cognitive burden of most efficiently using cloud offerings. As you
-              might imagine, I&apos;ve been closely following developments in
-              the emerging Infrastructure from Code movement.
+              cognitive burden of using cloud offerings. As you might imagine,
+              I&apos;ve been closely following developments in the emerging
+              Infrastructure from Code movement.
             </Para>
           </div>
         </div>
