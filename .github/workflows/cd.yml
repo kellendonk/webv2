@@ -20,7 +20,10 @@ jobs:
           cache: yarn
 
       - run: yarn install --immutable
-      - run: yarn nx build cdk
+
+      - run: yarn nx run-many --target=lint
+      - run: yarn nx run-many --target=test
+      - run: yarn nx run-many --target=build
 
       - uses: actions/upload-artifact@v3
         with:
