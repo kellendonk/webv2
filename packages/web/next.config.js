@@ -10,8 +10,11 @@ const nextConfig = {
   nx: {
     svgr: true,
   },
-  // Don't compress as
   compress: false,
+  i18n: {
+    locales: ['en'],
+    defaultLocale: 'en',
+  },
 };
 
 module.exports = withNx(nextConfig);
