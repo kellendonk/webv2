@@ -1,4 +1,4 @@
-import { CfnOutput, Stack, Stage, StageProps } from 'aws-cdk-lib';
+import { CfnOutput, Stack, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { SsrWebsite, SsrWebsiteCdn } from './SsrWebsite';
 import { DomainConfig, DomainConfigProps } from './DomainConfig';
@@ -32,6 +32,8 @@ export interface WebStageProps extends StageProps {
 export class WebStage extends Stage {
   constructor(scope: Construct, id: string, props: WebStageProps = {}) {
     super(scope, id, props);
+
+    Tags.of(this).add('Stage', id);
 
     const stack = new Stack(this, 'Stack');
 
