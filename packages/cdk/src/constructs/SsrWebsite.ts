@@ -16,6 +16,7 @@ import {
   FunctionEventType,
   IOrigin,
   PriceClass,
+  ViewerProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront';
 import { LambdaRestApi, MethodLoggingLevel } from 'aws-cdk-lib/aws-apigateway';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
@@ -161,9 +162,13 @@ export class SsrWebsiteCdn extends Construct {
             function: viewerRequest,
           },
         ],
+        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
       additionalBehaviors: {
-        '/_next/static/*': { origin: website.assetsOrigin },
+        '/_next/static/*': {
+          origin: website.assetsOrigin,
+          viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        },
       },
     });
 
