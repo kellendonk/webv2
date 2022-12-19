@@ -12,7 +12,7 @@ export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
       href={props.href}
       className={clsx([
         'flex items-center gap-1',
-        'rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900 text-sm',
+        'rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900 text-lg',
       ])}
     >
       {props.children}
@@ -30,7 +30,7 @@ export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
                 <span className="hidden sm:inline">for Kellendonk</span>
               </Link>
 
-              <div className="flex flex-col">
+              <div className="flex gap-5">
                 <NavTextLink href="https://github.com/misterjoshua">
                   <FontAwesomeIcon icon={faGithub} width={20} />
                   misterjoshua
