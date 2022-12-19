@@ -12,7 +12,7 @@ export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
       href={props.href}
       className={clsx([
         'flex items-center gap-1',
-        'rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900 text-lg',
+        'rounded-lg py-1 px-2 hover:bg-slate-100 text-lg',
       ])}
     >
       {props.children}

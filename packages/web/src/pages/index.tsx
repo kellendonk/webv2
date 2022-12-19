@@ -2,6 +2,7 @@ import React from 'react';
 import { MainLayout } from '../components/MainLayout';
 import { HeroSection, HeroTitle } from '../components/HeroSection';
 import Head from 'next/head';
+import { GradientText } from '../components/GradientText';
 
 export function Page() {
   return (
@@ -15,10 +16,7 @@ export function Page() {
       </Head>
       <HeroSection>
         <HeroTitle>
-          Home page for{' '}
-          <span className="text-[#ED3125] sm:whitespace-nowrap">
-            many things
-          </span>
+          Home page for <GradientText>many things</GradientText>
         </HeroTitle>
 
         <p className="text-xl py-14">

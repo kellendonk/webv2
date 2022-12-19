@@ -13,6 +13,7 @@ import {
 import Link from 'next/link';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import Head from 'next/head';
+import { GradientText } from '../../components/GradientText';
 
 export function Page() {
   return (
@@ -26,10 +27,7 @@ export function Page() {
       </Head>
       <HeroSection>
         <HeroTitle>
-          Josh&apos;s{' '}
-          <span className="text-[#ed3125] sm:whitespace-nowrap">
-            online profiles
-          </span>
+          Josh&apos;s <GradientText>online profiles</GradientText>
         </HeroTitle>
 
         <div className="flex flex-wrap justify-center gap-10 mt-20 px-10 max-w-2xl mx-auto">
@@ -76,6 +74,7 @@ type TreeLinkProps = React.PropsWithChildren<{
 const TreeLink = (props: TreeLinkProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
+  // Cause hover animation to run only once. (1 second animation duration)
   useEffect(() => {
     if (!isAnimating) return;
 
