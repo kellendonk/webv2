@@ -4,24 +4,29 @@ import { RecordTarget } from 'aws-cdk-lib/aws-route53';
 
 export interface DomainConfigProps {
   readonly domainName: string;
+  readonly secondaryDomainNames?: string[];
   readonly hostedZoneId: string;
   readonly hostedZoneName: string;
-  readonly secondaryNames?: string[];
 }
 
 export class DomainConfig extends Construct {
+  /** The main domain name */
   readonly domainName: string;
+  /** All secondary domain names */
   readonly secondaryDomainNames: string[];
 
-  readonly allDomainNames: string[];
+  /** All domain names */
+  get domainNames() {
+    return [this.domainName, ...this.secondaryDomainNames];
+  }
+
   readonly hostedZone: aws_route53.IHostedZone;
 
   constructor(scope: Construct, id: string, props: DomainConfigProps) {
     super(scope, id);
 
     this.domainName = props.domainName;
-    this.secondaryDomainNames = props.secondaryNames ?? [];
-    this.allDomainNames = [this.domainName, ...this.secondaryDomainNames];
+    this.secondaryDomainNames = props.secondaryDomainNames ?? [];
 
     this.hostedZone = aws_route53.HostedZone.fromHostedZoneAttributes(
       this,
@@ -35,7 +40,7 @@ export class DomainConfig extends Construct {
 
   createDnsRecords(stack: Construct, id: string, target: RecordTarget) {
     new NameRecords(stack, 'DnsRecords', {
-      domainNames: this.allDomainNames,
+      domainNames: this.domainNames,
       zone: this.hostedZone,
       target,
     });

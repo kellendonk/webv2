@@ -16,7 +16,7 @@ new WebStage(app, 'Kellendonk-Test', {
 new WebStage(app, 'Kellendonk-Production', {
   domain: {
     domainName: 'www.kellendonk.ca',
-    secondaryNames: ['kellendonk.ca'],
+    secondaryDomainNames: ['kellendonk.ca'],
     hostedZoneId: 'Z04480822SF8LKAO9VKJ5',
     hostedZoneName: 'kellendonk.ca',
   },

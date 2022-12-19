@@ -196,7 +196,7 @@ export class SsrWebsiteCdn extends Construct {
     }
 
     return {
-      domainNames: domainConfig.allDomainNames,
+      domainNames: domainConfig.domainNames,
       certificate: new aws_certificatemanager.DnsValidatedCertificate(
         this,
         'Domain',
