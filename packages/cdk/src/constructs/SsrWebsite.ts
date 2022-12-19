@@ -1,32 +1,22 @@
+import { LambdaBlowtorch } from '@wheatstalk/cdk-lambda-blowtorch';
 import {
   AssetStaging,
+  aws_apigateway,
   aws_certificatemanager,
   aws_cloudfront,
+  aws_cloudfront_origins,
   aws_lambda,
   aws_route53,
   aws_route53_targets,
+  aws_s3,
+  aws_s3_deployment,
   Duration,
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import {
-  CacheCookieBehavior,
-  CacheHeaderBehavior,
-  CachePolicy,
-  Distribution,
-  FunctionEventType,
-  IOrigin,
-  PriceClass,
-  ViewerProtocolPolicy,
-} from 'aws-cdk-lib/aws-cloudfront';
-import { LambdaRestApi, MethodLoggingLevel } from 'aws-cdk-lib/aws-apigateway';
-import { Bucket } from 'aws-cdk-lib/aws-s3';
-import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
-import { RestApiOrigin, S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
-import { DockerImageCode, DockerImageFunction } from 'aws-cdk-lib/aws-lambda';
+
 import * as fs from 'fs';
 import * as path from 'path';
-import { LambdaBlowtorch } from '@wheatstalk/cdk-lambda-blowtorch';
-import { RecordTarget } from 'aws-cdk-lib/aws-route53';
+
 import { API_GATEWAY_REQUEST } from './events';
 
 export interface SsrWebsiteProps {
@@ -44,12 +34,12 @@ export class SsrWebsite extends Construct {
   /**
    * The REST API origin where the lambda handlers reside.
    */
-  readonly restApiOrigin: IOrigin;
+  readonly restApiOrigin: aws_cloudfront.IOrigin;
 
   /**
    * The assets origin where all static assets live.
    */
-  readonly assetsOrigin: IOrigin;
+  readonly assetsOrigin: aws_cloudfront.IOrigin;
 
   /**
    * The hash of the asset backing the deployed website. You can use this as a
@@ -68,8 +58,8 @@ export class SsrWebsite extends Construct {
 
     this.hash = stagedDistAsset.assetHash;
 
-    const handler = new DockerImageFunction(this, 'Handler', {
-      code: DockerImageCode.fromImageAsset(distDir),
+    const handler = new aws_lambda.DockerImageFunction(this, 'Handler', {
+      code: aws_lambda.DockerImageCode.fromImageAsset(distDir),
       tracing: aws_lambda.Tracing.ACTIVE,
     });
 
@@ -80,27 +70,27 @@ export class SsrWebsite extends Construct {
       warmingPayload: JSON.stringify(API_GATEWAY_REQUEST),
     });
 
-    const restApi = new LambdaRestApi(this, 'Api', {
+    const restApi = new aws_apigateway.LambdaRestApi(this, 'Api', {
       handler,
       deployOptions: {
         tracingEnabled: true,
-        loggingLevel: MethodLoggingLevel.INFO,
+        loggingLevel: aws_apigateway.MethodLoggingLevel.INFO,
       },
     });
 
-    const assets = new Bucket(this, 'Assets');
+    const assets = new aws_s3.Bucket(this, 'Assets');
 
     // Deploy the static assets to the bucket. Note: We don't prune here. This
     // is so that users currently on the site don't fail when they try to load
     // static assets such as page js files.
-    new BucketDeployment(this, 'DeployStaticAssets', {
+    new aws_s3_deployment.BucketDeployment(this, 'DeployStaticAssets', {
       destinationBucket: assets,
       destinationKeyPrefix: '_next/static',
-      sources: [Source.asset(`${distDir}/.next/static`)],
+      sources: [aws_s3_deployment.Source.asset(`${distDir}/.next/static`)],
     });
 
-    this.assetsOrigin = new S3Origin(assets);
-    this.restApiOrigin = new RestApiOrigin(restApi);
+    this.assetsOrigin = new aws_cloudfront_origins.S3Origin(assets);
+    this.restApiOrigin = new aws_cloudfront_origins.RestApiOrigin(restApi);
   }
 }
 
@@ -116,21 +106,22 @@ export interface SsrWebsiteCdnProps {
 
 export class SsrWebsiteCdn extends Construct {
   readonly cdnDomainName: string;
-  readonly recordTarget: RecordTarget;
+  readonly recordTarget: aws_route53.RecordTarget;
 
   constructor(scope: Construct, id: string, props: SsrWebsiteCdnProps) {
     super(scope, id);
 
     const { website } = props;
 
-    const cachePolicy = new CachePolicy(this, 'SSRCachePolicy', {
+    const cachePolicy = new aws_cloudfront.CachePolicy(this, 'SSRCachePolicy', {
       minTtl: Duration.seconds(1),
       maxTtl: Duration.days(30),
       defaultTtl: Duration.days(1),
       enableAcceptEncodingGzip: true,
       enableAcceptEncodingBrotli: true,
-      headerBehavior: CacheHeaderBehavior.allowList('X-Website-Hash'),
-      cookieBehavior: CacheCookieBehavior.none(),
+      headerBehavior:
+        aws_cloudfront.CacheHeaderBehavior.allowList('X-Website-Hash'),
+      cookieBehavior: aws_cloudfront.CacheCookieBehavior.none(),
     });
 
     const code = fs.readFileSync(
@@ -147,8 +138,8 @@ export class SsrWebsiteCdn extends Construct {
       ),
     });
 
-    const distribution = new Distribution(this, 'Distribution', {
-      priceClass: PriceClass.PRICE_CLASS_100,
+    const distribution = new aws_cloudfront.Distribution(this, 'Distribution', {
+      priceClass: aws_cloudfront.PriceClass.PRICE_CLASS_100,
       enableIpv6: true,
       enableLogging: true,
       certificate: props.domainConfig?.certificate,
@@ -158,16 +149,18 @@ export class SsrWebsiteCdn extends Construct {
         cachePolicy,
         functionAssociations: [
           {
-            eventType: FunctionEventType.VIEWER_REQUEST,
+            eventType: aws_cloudfront.FunctionEventType.VIEWER_REQUEST,
             function: viewerRequest,
           },
         ],
-        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        viewerProtocolPolicy:
+          aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
       additionalBehaviors: {
         '/_next/static/*': {
           origin: website.assetsOrigin,
-          viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          viewerProtocolPolicy:
+            aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         },
       },
     });
