@@ -30,7 +30,7 @@ export function Page() {
         />
       </Head>
 
-      <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10 pt-20 text-center lg:py-16 lg:pt-32">
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10 pt-20 text-center lg:py-16 lg:pt-20">
         <HeroTitle>
           Hi I&apos;m <GradientText>Josh</GradientText>
         </HeroTitle>
@@ -56,9 +56,9 @@ export function Page() {
             <Para>
               Lately, I&apos;ve been exploring ways to increase the
               manageability of cloud-based projects. I aim to reduce the
-              cognitive burden of using cloud products. As you might imagine,
-              I&apos;ve been closely following developments in the emerging
-              Infrastructure from Code movement.
+              cognitive burden of most efficiently using cloud offerings. As you
+              might imagine, I&apos;ve been closely following developments in
+              the emerging Infrastructure from Code movement.
             </Para>
           </div>
         </div>
