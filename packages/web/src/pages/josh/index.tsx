@@ -18,7 +18,7 @@ export function Page() {
   return (
     <MainLayout>
       <Head>
-        <title>Josh&apos;s Online Profile</title>
+        <title>Josh&apos;s Online Profiles</title>
         <meta
           name="description"
           content="Links to Josh's various online profiles."
@@ -27,7 +27,7 @@ export function Page() {
       <HeroSection>
         <HeroTitle>
           Josh&apos;s{' '}
-          <span className="text-[#fdc214] sm:whitespace-nowrap">
+          <span className="text-[#ed3125] sm:whitespace-nowrap">
             online profiles
           </span>
         </HeroTitle>
