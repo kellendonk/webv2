@@ -1,5 +1,5 @@
 import { App } from 'aws-cdk-lib';
-import { WebStage } from './WebStage';
+import { WebStage } from './constructs';
 
 const app = new App();
 
