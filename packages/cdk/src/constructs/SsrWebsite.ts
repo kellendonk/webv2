@@ -122,6 +122,7 @@ export class SsrWebsiteCdn extends Construct {
       headerBehavior:
         aws_cloudfront.CacheHeaderBehavior.allowList('X-Website-Hash'),
       cookieBehavior: aws_cloudfront.CacheCookieBehavior.none(),
+      queryStringBehavior: aws_cloudfront.CacheQueryStringBehavior.all(),
     });
 
     const code = fs.readFileSync(
