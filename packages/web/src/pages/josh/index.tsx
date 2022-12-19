@@ -72,7 +72,11 @@ type TreeLinkProps = React.PropsWithChildren<{
 }>;
 
 const TreeLink = (props: TreeLinkProps) => (
-  <Link href={props.href} className="flex flex-col text-2xl w-[100px]" rel="me">
+  <Link
+    href={props.href}
+    className="flex flex-col text-2xl w-[100px] hover:text-[#ed3125]"
+    rel="me"
+  >
     <FontAwesomeIcon icon={props.icon} className="text-[75px]" />
     <div className="mt-4">{props.children}</div>
   </Link>
