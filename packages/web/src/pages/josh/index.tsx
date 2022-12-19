@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { HeroSection, HeroTitle } from '../../components/HeroSection';
 import { MainLayout } from '../../components/MainLayout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,7 +18,7 @@ export function Page() {
   return (
     <MainLayout>
       <Head>
-        <title>Josh&apos;s Links</title>
+        <title>Josh&apos;s Online Profile</title>
         <meta
           name="description"
           content="Links to Josh's various online profiles."
@@ -27,7 +27,9 @@ export function Page() {
       <HeroSection>
         <HeroTitle>
           Josh&apos;s{' '}
-          <span className="text-[#ED3125] sm:whitespace-nowrap">profiles</span>
+          <span className="text-[#fdc214] sm:whitespace-nowrap">
+            online profiles
+          </span>
         </HeroTitle>
 
         <div className="flex flex-wrap justify-center gap-10 mt-20 px-10 max-w-2xl mx-auto">
@@ -71,13 +73,36 @@ type TreeLinkProps = React.PropsWithChildren<{
   icon: IconProp;
 }>;
 
-const TreeLink = (props: TreeLinkProps) => (
-  <Link
-    href={props.href}
-    className="flex flex-col text-2xl w-[100px] hover:text-[#ed3125]"
-    rel="me"
-  >
-    <FontAwesomeIcon icon={props.icon} className="text-[75px]" />
-    <div className="mt-4">{props.children}</div>
-  </Link>
-);
+const TreeLink = (props: TreeLinkProps) => {
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    if (!isAnimating) return;
+
+    const handle = setTimeout(() => setIsAnimating(false), 1000);
+
+    return () => {
+      clearTimeout(handle);
+    };
+  }, [isAnimating, setIsAnimating]);
+
+  return (
+    <div>
+      <Link
+        href={props.href}
+        className="flex flex-col text-2xl w-[100px] hover:text-[#ed3125]"
+        rel="me"
+        onMouseEnter={() => setIsAnimating(true)}
+        onMouseLeave={() => setIsAnimating(false)}
+      >
+        <FontAwesomeIcon
+          icon={props.icon}
+          className="text-[75px]"
+          bounce={isAnimating}
+          dur="1s"
+        />
+        <div className="mt-4">{props.children}</div>
+      </Link>
+    </div>
+  );
+};
