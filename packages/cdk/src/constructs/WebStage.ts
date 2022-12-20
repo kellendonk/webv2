@@ -42,7 +42,7 @@ export class WebStage extends Stage {
     });
 
     const domainConfig =
-      props.domain && new DomainConfig(stack, 'DomainNames', props.domain);
+      props.domain && new DomainConfig(stack, 'DomainConfig', props.domain);
 
     const cdn = new SsrWebsiteCdn(stack, 'Cdn', {
       website,
