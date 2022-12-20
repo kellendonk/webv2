@@ -16,9 +16,6 @@ import { Construct } from 'constructs';
 import * as aws_apigatewayv2 from '@aws-cdk/aws-apigatewayv2-alpha';
 import * as aws_apigatewayv2_integration from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 
-import * as fs from 'fs';
-import * as path from 'path';
-
 import { API_GATEWAY_REQUEST } from './events';
 import { DomainConfig } from './DomainConfig';
 
@@ -127,16 +124,12 @@ export class SsrWebsiteCdn extends Construct {
       queryStringBehavior: aws_cloudfront.CacheQueryStringBehavior.all(),
     });
 
-    const code = fs.readFileSync(
-      path.join(__dirname, 'SsrWebsite.ViewerRequest.js'),
-      'utf8',
-    );
-
     const viewerRequest = new aws_cloudfront.Function(this, 'ViewerRequest', {
       functionName: [...this.node.path.split('/'), 'ViewerRequest'].join('-'),
       code: aws_cloudfront.FunctionCode.fromInline(
-        scriptSub(code, {
-          WEBSITE_HASH: website.hash,
+        cdnFunction({
+          websiteHash: website.hash,
+          primaryDomain: domainConfig?.domainName,
         }),
       ),
     });
@@ -212,12 +205,39 @@ export class SsrWebsiteCdn extends Construct {
   }
 }
 
-export function scriptSub(
-  script: string,
-  props: Record<string, string>,
-): string {
-  return Object.entries(props).reduce(
-    (acc, [k, v]) => acc.replace(new RegExp(`\\{\\{${k}\\}\\}`, 'g'), v),
-    script,
-  );
+interface CdnFunctionProps {
+  readonly websiteHash: string;
+  readonly primaryDomain?: string;
+}
+
+/**
+ * Renders a CloudFront function responsible for transforming requests
+ * just as they're passed to CloudFront.
+ */
+export function cdnFunction(props: CdnFunctionProps): string {
+  return `
+var props = ${JSON.stringify(props)};
+
+function handler(event) {
+  var request = event.request;
+
+  // Redirect to the primary domain
+  if (props.primaryDomain && request.headers.host.value !== props.primaryDomain) {
+    return {
+      statusCode: 302,
+      statusDescription: 'Found',
+      headers: {
+        location: {
+          value: "https://" + props.primaryDomain + request.uri
+        }
+      }
+    };
+  }
+
+  // Add the website hash as a cache key
+  request.headers['x-website-hash'] = { value: props.websiteHash };
+
+  return request;
+}
+  `;
 }
