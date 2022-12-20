@@ -32,17 +32,35 @@ export function Page() {
 
       <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10 pt-20 text-center lg:py-16 lg:pt-20">
         <HeroTitle>
-          Hi I&apos;m <GradientText>Josh</GradientText>
+          Hi, I&apos;m <GradientText>Josh</GradientText>
         </HeroTitle>
 
         <div className="flex mt-16 justify-center items-center gap-8 md:gap-16 flex-wrap md:flex-nowrap">
-          <Image
-            src={joshProfile}
-            alt="Josh's Picture"
-            width="250"
-            height="250"
-            className="rounded-full"
-          />
+          <div className="min-w-[250px]">
+            <Image
+              src={joshProfile}
+              alt="Josh's Picture"
+              width="250"
+              height="250"
+              className="rounded-full"
+            />
+
+            <div className="mt-6 border-2 border-[#aaa] rounded-xl p-2 relative">
+              Josh Kellendonk
+              <svg
+                width="20"
+                height="15"
+                className="absolute top-[-15px] left-[calc(50%-10px)]"
+              >
+                <path
+                  stroke="#aaa"
+                  fill="#fff"
+                  strokeWidth="2"
+                  d="M 0 15 L 10 0 L 20 15"
+                />
+              </svg>
+            </div>
+          </div>
           <div className="shrink text-left">
             <Para>
               I&apos;m a Cloud Solutions Architect and Software Developer from
