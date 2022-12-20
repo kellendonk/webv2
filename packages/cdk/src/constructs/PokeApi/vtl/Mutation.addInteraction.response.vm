@@ -1,0 +1,5 @@
+{
+  "id": $util.toJson($ctx.result.PK.split("#", 2).get(1)),
+  "interaction": $util.toJson($ctx.result.SK.split("#", 2).get(1)),
+  "count": $util.toJson($ctx.result.InteractionCount)
+}

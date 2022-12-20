@@ -35,6 +35,11 @@
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-apigatewayv2-integrations-alpha/-/aws-apigatewayv2-integrations-alpha-2.55.1-alpha.0.tgz#b3a338dec64772433bf241dfd7922fcee0cd8fe9"
   integrity sha512-ZdSLAdAMamxfQInoI37rYdVBsYzcFG31trgydTsdnVbdhEt4riaTPshGe+rAwOxKg0RYuvJb4TR/IPpnYapMYA==
 
+"@aws-cdk/aws-appsync-alpha@^2.55.1-alpha.0":
+  version "2.55.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-appsync-alpha/-/aws-appsync-alpha-2.55.1-alpha.0.tgz#d38bd350553e6c5ebb6d3c9d95be2ff55d000419"
+  integrity sha512-mUTBnXY6Dz3ZtvC8APA8MHlgj5a/lG/dLeaCoz66VBTI0Gq80NZEJVZjpiS50k/rgJRIVTksH2CfBwqjuJcDfw==
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.16.7", "@babel/code-frame@^7.18.6":
   version "7.18.6"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.18.6.tgz#3b25d38c89600baa2dcc219edfa88a74eb2c427a"

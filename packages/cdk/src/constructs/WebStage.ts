@@ -2,6 +2,7 @@ import { CfnOutput, Stack, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { SsrWebsite, SsrWebsiteCdn } from './SsrWebsite';
 import { DomainConfig, DomainConfigProps } from './DomainConfig';
+import { PokeApi } from './PokeApi';
 
 export interface WebStageProps extends StageProps {
   readonly domain?: DomainConfigProps;
@@ -36,6 +37,8 @@ export class WebStage extends Stage {
     Tags.of(this).add('Stage', id);
 
     const stack = new Stack(this, 'Stack');
+
+    new PokeApi(stack, 'PokeApi');
 
     const website = new SsrWebsite(stack, 'Website', {
       distDir: 'dist/packages/web',
