@@ -64,20 +64,21 @@ export function Page() {
           <div className="shrink text-left">
             <Para>
               I&apos;m a Cloud Solutions Architect and Software Developer from
-              Calgary, Alberta 🇨🇦. I am intimately familiar with both the AWS
-              cloud and Kubernetes.
+              Calgary, Alberta 🇨🇦. I am intimately familiar with the AWS cloud
+              and Kubernetes, having used AWS since 2008 and Kubernetes before
+              1.0.
             </Para>
             <Para>
               Most days, you can find me hacking on a SaaS product or helping my
-              team deliver top-quality products. My most-used programming
-              languages in 2022 were: TypeScript, Go, and Python.
+              team deliver top-quality serverless products. My most-used
+              programming languages in 2022 were: TypeScript, Go, and Python.
             </Para>
             <Para>
               Lately, I&apos;ve been exploring ways to increase the
               manageability of cloud-based projects. I aim to reduce the
-              cognitive burden of using cloud offerings. As you might imagine,
-              I&apos;ve been closely following developments in the emerging
-              Infrastructure from Code movement.
+              cognitive burden of using cloud services. As a result, I&apos;ve
+              been closely following developments in the growing{' '}
+              <strong>Infrastructure from Code</strong> movement.
             </Para>
           </div>
         </div>
