@@ -43,6 +43,7 @@ export function Page() {
               width="250"
               height="250"
               className="rounded-full"
+              priority
             />
 
             <div className="mt-6 border-2 border-[#aaa] rounded-xl p-2 relative">
