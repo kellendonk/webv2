@@ -134,6 +134,10 @@ export class SsrWebsiteCdn extends Construct {
       ),
     });
 
+    // Ensure that the website is deployed first before we change the viewer
+    // request function so the website hash cache key doesn't flip too soon.
+    viewerRequest.node.addDependency(website);
+
     const distribution = new aws_cloudfront.Distribution(this, 'Distribution', {
       ...this.domainConfigDistributionProps(domainConfig),
       priceClass: aws_cloudfront.PriceClass.PRICE_CLASS_100,
