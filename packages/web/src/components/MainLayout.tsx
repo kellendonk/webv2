@@ -53,24 +53,26 @@ export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
               href="https://github.com/kellendonk/webv2"
               target="_blank"
               rel="noreferrer"
+              aria-label="View GitHub"
             >
               <FontAwesomeIcon
                 icon={faGithub}
                 height="20"
                 className="min-h-[20px]"
-                aria-label="View GitHub"
+                aria-label="GitHub Logo"
               />
             </a>
             <a
               href="https://gitpod.io/#https://github.com/kellendonk/webv2"
               target="_blank"
               rel="noreferrer"
+              aria-label="Edit with GitPod"
             >
               <FontAwesomeIcon
                 icon={faEdit}
                 height="20"
                 className="min-h-[20px]"
-                aria-label="Edit with GitPod"
+                aria-label="Edit Icon"
               />
             </a>
           </div>
