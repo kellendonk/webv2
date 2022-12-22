@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { aws_dynamodb, aws_logs } from 'aws-cdk-lib';
+import { aws_dynamodb, aws_logs, RemovalPolicy } from 'aws-cdk-lib';
 import * as aws_appsync from '@aws-cdk/aws-appsync-alpha';
 import { FieldLogLevel } from '@aws-cdk/aws-appsync-alpha';
 import { join } from 'path';
@@ -12,7 +12,11 @@ export class PokeApi extends Construct {
   constructor(scope: Construct, id: string, props: PokeApiProps = {}) {
     super(scope, id);
 
-    const table = props.table ?? new PokeDataTable(this, 'Table');
+    const table =
+      props.table ??
+      new PokeDataTable(this, 'Table', {
+        removalPolicy: RemovalPolicy.DESTROY,
+      });
 
     const api = new aws_appsync.GraphqlApi(this, 'Graphql', {
       name: 'PokeApi',
@@ -38,6 +42,14 @@ export class PokeApi extends Construct {
       responseMappingTemplate: vtl('Query.getInteractions.response.vm'),
     });
 
+    // new aws_appsync.Resolver(this, 'Mutation-addInteraction', {
+    //   api,
+    //   typeName: 'Mutation',
+    //   fieldName: 'addInteraction',
+    //   requestMappingTemplate: vtl('Mutation.addInteraction.vm'),
+    //   responseMappingTemplate: vtl('Mutation.addInteraction.response.vm'),
+    // });
+
     api.createResolver('Mutation-addInteraction', {
       dataSource: tableDataSource,
       typeName: 'Mutation',
@@ -49,7 +61,11 @@ export class PokeApi extends Construct {
 }
 
 export class PokeDataTable extends aws_dynamodb.Table {
-  constructor(scope: Construct, id: string) {
+  constructor(
+    scope: Construct,
+    id: string,
+    props: Partial<aws_dynamodb.TableProps> = {},
+  ) {
     super(scope, id, {
       partitionKey: {
         name: 'PK',
@@ -60,6 +76,7 @@ export class PokeDataTable extends aws_dynamodb.Table {
         type: aws_dynamodb.AttributeType.STRING,
       },
       billingMode: aws_dynamodb.BillingMode.PAY_PER_REQUEST,
+      ...props,
     });
   }
 }
