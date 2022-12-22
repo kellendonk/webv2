@@ -90,7 +90,7 @@ export function Page() {
           Josh&apos;s <GradientText>online profiles</GradientText>
         </HeroTitle>
 
-        <div className="flex flex-wrap justify-center gap-10 mt-20 px-10 max-w-2xl mx-auto">
+        <div className="flex flex-wrap justify-center gap-14 mt-20 px-10 max-w-2xl mx-auto">
           <TreeLink icon={faGithub} href="https://github.com/misterjoshua">
             GitHub
           </TreeLink>
@@ -159,6 +159,7 @@ const TreeLink = (props: TreeLinkProps) => {
           className="text-[75px]"
           bounce={isAnimating}
           dur="1s"
+          height={100}
         />
         <div className="mt-4">{props.children}</div>
       </Link>
