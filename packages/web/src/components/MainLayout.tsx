@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import logo from '../assets/logo-mark.svg';
 import Image from 'next/image';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
 export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   const NavTextLink = (props: React.PropsWithChildren<{ href: string }>) => (
@@ -21,8 +22,8 @@ export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   return (
     <>
-      <div className="min-h-100vh">
-        <header className="py-10">
+      <div className="min-h-[100vh] flex flex-col justify-between">
+        <header className="py-10 shrink-0">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <nav className="relative z-50 flex justify-between">
               <Link aria-label="Home" href="/" className="flex items-center">
@@ -44,7 +45,36 @@ export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
           </div>
         </header>
 
-        <main>{children}</main>
+        <main className="grow">{children}</main>
+
+        <footer className="bg-black text-white shink-0">
+          <div className="mx-auto max-w-7xl flex gap-4 justify-end items-center p-2">
+            <Link
+              href="https://github.com/kellendonk/webv2"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <FontAwesomeIcon
+                icon={faGithub}
+                height="20"
+                className="min-h-[20px]"
+                aria-label="View GitHub"
+              />
+            </Link>
+            <Link
+              href="https://gitpod.io/#https://github.com/kellendonk/webv2"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <FontAwesomeIcon
+                icon={faEdit}
+                height="20"
+                className="min-h-[20px]"
+                aria-label="Edit with GitPod"
+              />
+            </Link>
+          </div>
+        </footer>
       </div>
     </>
   );
