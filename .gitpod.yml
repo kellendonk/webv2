@@ -1,3 +1,8 @@
+github:
+  prebuilds:
+    master: true
+    addCheck: true
+
 tasks:
   - init: yarn install
     command: yarn nx serve web
