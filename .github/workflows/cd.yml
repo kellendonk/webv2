@@ -31,26 +31,8 @@ jobs:
           path: dist/packages/cdk
           retention-days: 1
 
-  release_test:
-    needs: build
-    runs-on: ubuntu-22.04
-
-    environment: test
-    concurrency: release_test
-
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/cdk-deploy
-        with:
-          app: cdk.out/assembly-Kellendonk-Test
-          aws-role: ${{ secrets.AWS_ROLE }}
-
   release_production:
-    needs: release_test
+    needs: build
     runs-on: ubuntu-22.04
 
     environment: production
