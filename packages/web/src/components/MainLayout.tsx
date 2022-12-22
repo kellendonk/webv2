@@ -49,7 +49,7 @@ export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
 
         <footer className="bg-black text-white shink-0">
           <div className="mx-auto max-w-7xl flex gap-4 justify-end items-center p-2">
-            <Link
+            <a
               href="https://github.com/kellendonk/webv2"
               target="_blank"
               rel="noreferrer"
@@ -60,8 +60,8 @@ export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
                 className="min-h-[20px]"
                 aria-label="View GitHub"
               />
-            </Link>
-            <Link
+            </a>
+            <a
               href="https://gitpod.io/#https://github.com/kellendonk/webv2"
               target="_blank"
               rel="noreferrer"
@@ -72,7 +72,7 @@ export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
                 className="min-h-[20px]"
                 aria-label="Edit with GitPod"
               />
-            </Link>
+            </a>
           </div>
         </footer>
       </div>
