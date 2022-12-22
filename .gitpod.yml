@@ -1,0 +1,8 @@
+tasks:
+  - init: yarn install
+    command: yarn nx serve web
+
+ports:
+  - port: 4200
+    onOpen: open-browser
+    name: Website
