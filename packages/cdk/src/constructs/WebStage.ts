@@ -1,11 +1,12 @@
 import { CfnOutput, Stack, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { SsrWebsite, SsrWebsiteCdn } from './SsrWebsite';
-import { DomainConfig, DomainConfigProps } from './DomainConfig';
-import { PokeApi } from './PokeApi';
+import { SsrWebsite } from './SsrWebsite';
+import { Api, ApiTable } from './Api';
+import { DomainName, DomainNameOptions } from './DomainName';
+import { Cdn } from './Cdn';
 
 export interface WebStageProps extends StageProps {
-  readonly domain?: DomainConfigProps;
+  readonly domainName?: DomainNameOptions;
 }
 
 /**
@@ -38,24 +39,26 @@ export class WebStage extends Stage {
 
     const stack = new Stack(this, 'Stack');
 
-    new PokeApi(stack, 'PokeApi');
+    const apiTable = new ApiTable(stack, 'ApiTable');
+
+    const api = new Api(stack, 'Api', {
+      table: apiTable,
+    });
 
     const website = new SsrWebsite(stack, 'Website', {
       distDir: 'dist/packages/web',
     });
 
-    const domainConfig =
-      props.domain && new DomainConfig(stack, 'DomainConfig', props.domain);
-
-    const cdn = new SsrWebsiteCdn(stack, 'Cdn', {
+    const cdn = new Cdn(stack, 'Cdn', {
       website,
-      domainConfig,
+      api,
+      domainName:
+        props.domainName &&
+        new DomainName(stack, 'DomainName', props.domainName),
     });
 
-    domainConfig?.createDnsRecords(stack, 'DnsRecords', cdn.recordTarget);
-
     new CfnOutput(stack, 'Url', {
-      value: `https://${cdn.cdnDomainName}/`,
+      value: `https://${cdn.domainName}/`,
     });
   }
 }

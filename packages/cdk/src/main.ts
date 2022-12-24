@@ -5,12 +5,16 @@ const app = new App();
 
 new WebStage(app, 'Kellendonk-Dev');
 
+const hostedZoneInfo = {
+  hostedZoneId: 'Z04480822SF8LKAO9VKJ5',
+  hostedZoneName: 'kellendonk.ca',
+};
+
 new WebStage(app, 'Kellendonk-Production', {
-  domain: {
+  domainName: {
     domainName: 'www.kellendonk.ca',
-    secondaryDomainNames: ['kellendonk.ca'],
-    hostedZoneId: 'Z04480822SF8LKAO9VKJ5',
-    hostedZoneName: 'kellendonk.ca',
+    subjectAlternativeNames: ['kellendonk.ca'],
+    ...hostedZoneInfo,
   },
 });
 

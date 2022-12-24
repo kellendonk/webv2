@@ -1,35 +1,42 @@
 import { Construct } from 'constructs';
-import { aws_dynamodb, aws_logs, RemovalPolicy } from 'aws-cdk-lib';
+import {
+  aws_cloudfront,
+  aws_cloudfront_origins,
+  aws_dynamodb,
+  aws_logs,
+  Fn,
+  RemovalPolicy,
+} from 'aws-cdk-lib';
 import * as aws_appsync from '@aws-cdk/aws-appsync-alpha';
-import { FieldLogLevel } from '@aws-cdk/aws-appsync-alpha';
 import { join } from 'path';
 
-export interface PokeApiProps {
-  readonly table?: PokeDataTable;
+export interface ApiProps {
+  readonly table?: ApiTable;
 }
 
-export class PokeApi extends Construct {
-  constructor(scope: Construct, id: string, props: PokeApiProps = {}) {
+export class Api extends Construct {
+  readonly origin: aws_cloudfront.IOrigin;
+
+  constructor(scope: Construct, id: string, props: ApiProps = {}) {
     super(scope, id);
 
     const table =
       props.table ??
-      new PokeDataTable(this, 'Table', {
+      new ApiTable(this, 'Table', {
         removalPolicy: RemovalPolicy.DESTROY,
       });
 
     const api = new aws_appsync.GraphqlApi(this, 'Graphql', {
-      name: 'PokeApi',
+      name: 'KellendonkApi',
       schema: aws_appsync.SchemaFile.fromAsset(
-        join(__dirname, 'PokeApi.graphql'),
+        join(__dirname, 'schema.graphql'),
       ),
 
       xrayEnabled: true,
       logConfig: {
-        fieldLogLevel: FieldLogLevel.ALL,
+        fieldLogLevel: aws_appsync.FieldLogLevel.ALL,
         retention: aws_logs.RetentionDays.ONE_MONTH,
       },
-      authorizationConfig: {},
     });
 
     const tableDataSource = api.addDynamoDbDataSource('Table', table);
@@ -42,14 +49,6 @@ export class PokeApi extends Construct {
       responseMappingTemplate: vtl('Query.getInteractions.response.vm'),
     });
 
-    // new aws_appsync.Resolver(this, 'Mutation-addInteraction', {
-    //   api,
-    //   typeName: 'Mutation',
-    //   fieldName: 'addInteraction',
-    //   requestMappingTemplate: vtl('Mutation.addInteraction.vm'),
-    //   responseMappingTemplate: vtl('Mutation.addInteraction.response.vm'),
-    // });
-
     api.createResolver('Mutation-addInteraction', {
       dataSource: tableDataSource,
       typeName: 'Mutation',
@@ -57,10 +56,22 @@ export class PokeApi extends Construct {
       requestMappingTemplate: vtl('Mutation.addInteraction.vm'),
       responseMappingTemplate: vtl('Mutation.addInteraction.response.vm'),
     });
+
+    // Determine the api domain from the resource's GraphQLUrl attribute.
+    // There's no correlation between the API ID and the URL, so we need to do
+    // some string manipulation on a url that looks like this:
+    // https://z6lexrwz2vcyhmi5q7yshcgd5i.appsync-api.ca-central-1.amazonaws.com/graphql
+    const apiDomain = Fn.select(2, Fn.split('/', api.graphqlUrl));
+
+    this.origin = new aws_cloudfront_origins.HttpOrigin(apiDomain, {
+      customHeaders: {
+        'x-api-key': api.apiKey,
+      },
+    });
   }
 }
 
-export class PokeDataTable extends aws_dynamodb.Table {
+export class ApiTable extends aws_dynamodb.Table {
   constructor(
     scope: Construct,
     id: string,

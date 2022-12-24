@@ -1,4 +1,4 @@
-import { cdnFunction } from './SsrWebsite';
+import { cdnFunction } from './Cdn';
 
 describe('cdnFunction', () => {
   const rendered = cdnFunction({

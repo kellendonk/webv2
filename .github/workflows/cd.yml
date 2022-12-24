@@ -21,9 +21,9 @@ jobs:
 
       - run: yarn install --immutable
 
-      - run: yarn nx run-many --target=lint
-      - run: yarn nx run-many --target=test
-      - run: yarn nx run-many --target=build
+      - run: yarn lint
+      - run: yarn test
+      - run: yarn build
 
       - uses: actions/upload-artifact@v3
         with:

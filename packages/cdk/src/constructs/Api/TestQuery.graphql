@@ -1,0 +1,15 @@
+query Query {
+  getInteractions(id: "foo") {
+    id
+    interaction
+    count
+  }
+}
+
+mutation Mutation {
+  addInteraction(id: "foo", interaction: "baboon") {
+    id
+    interaction
+    count
+  }
+}

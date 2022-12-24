@@ -3,7 +3,11 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build": "nx run-many --target=build",
+    "lint": "nx run-many --target=lint",
+    "test": "nx run-many --target=test",
+    "cdk:production": "cdk --app dist/packages/cdk/assembly-Kellendonk-Production"
   },
   "private": true,
   "dependencies": {
