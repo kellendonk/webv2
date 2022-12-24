@@ -1,4 +1,3 @@
-![GitHub branch checks state](https://img.shields.io/github/checks-status/kellendonk/webv2/main)
 [<img src="https://www.gitpod.io/svg/media-kit/logo-mark.svg" height="20" alt="Open with GitPod">](https://gitpod.io/#https://github.com/kellendonk/webv2)
 
 # Kellendonk.ca
