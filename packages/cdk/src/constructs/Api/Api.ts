@@ -11,9 +11,16 @@ import * as aws_appsync from '@aws-cdk/aws-appsync-alpha';
 import { join } from 'path';
 
 export interface ApiProps {
+  /**
+   * Use an externally owned database table.
+   * @default - Creates its own
+   */
   readonly table?: ApiTable;
 }
 
+/**
+ * Responsible for creating the GraphQL API.
+ */
 export class Api extends Construct {
   readonly origin: aws_cloudfront.IOrigin;
 
@@ -71,6 +78,10 @@ export class Api extends Construct {
   }
 }
 
+/**
+ * DynamoDB table for the API. It's a single table design, so it should work
+ * for most use cases.
+ */
 export class ApiTable extends aws_dynamodb.Table {
   constructor(
     scope: Construct,
@@ -92,6 +103,9 @@ export class ApiTable extends aws_dynamodb.Table {
   }
 }
 
-function vtl(paths: string) {
-  return aws_appsync.MappingTemplate.fromFile(join(__dirname, 'vtl', paths));
+/**
+ * Create a mapping template from a vtl template file.
+ */
+function vtl(subPath: string): aws_appsync.MappingTemplate {
+  return aws_appsync.MappingTemplate.fromFile(join(__dirname, 'vtl', subPath));
 }

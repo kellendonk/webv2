@@ -1,1 +1,1 @@
-export * from './WebStage';
+export * from './KellendonkStage';

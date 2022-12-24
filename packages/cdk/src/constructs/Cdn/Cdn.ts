@@ -5,13 +5,22 @@ import { SsrWebsite } from '../SsrWebsite';
 import { Api } from '../Api';
 
 export interface CdnProps {
+  /** The website */
   readonly website: SsrWebsite;
 
+  /** The API */
   readonly api: Api;
 
+  /**
+   * The domain name to bind to the distribution
+   * @default - use the default CloudFront domain name
+   */
   readonly domainName?: DomainName;
 }
 
+/**
+ * Responsible for creating the CDN distribution.
+ */
 export class Cdn extends Construct {
   readonly domainName: string;
 
@@ -48,7 +57,7 @@ export class Cdn extends Construct {
 
     const distribution = new aws_cloudfront.Distribution(this, 'Distribution', {
       defaultBehavior: {
-        origin: website.ssrOrigin,
+        origin: website.origin,
         cachePolicy,
         functionAssociations: [
           {

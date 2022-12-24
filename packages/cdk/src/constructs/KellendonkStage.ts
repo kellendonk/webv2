@@ -6,19 +6,20 @@ import { DomainName, DomainNameOptions } from './DomainName';
 import { Cdn } from './Cdn';
 
 export interface WebStageProps extends StageProps {
+  /** Give the CDN a domain name. */
   readonly domainName?: DomainNameOptions;
 }
 
 /**
- * Responsible for creating website stacks and wiring up their constructs.
+ * Responsible for creating stacks and wiring up constituent constructs.
  *
  * ```
  *          ┌──────────────────────────────┐
  *          │ Content Distribution Network │
- *          │        <<cloudfront>>        ├────────────────────┐
+ *          │        <<cloudfront>>        ├──────/graphql──────┐
  *          └──┬──────────────────────┬────┘                    │
  *             │                      │                         │
- *             │                      │                         │
+ *             /*               /_next/static/*                 │
  *   ┌─────────┼──────────────────────┼─────────────┐  ┌────────┼─────────────────────────┐
  *   │         │                      │             │  │        │                         │
  *   │ ┌───────▼────────┐ ┌───────────▼───────────┐ │  │ ┌──────▼──────┐ ┌──────────────┐ │
@@ -26,13 +27,13 @@ export interface WebStageProps extends StageProps {
  *   │ │   <<lambda>>   │ │       <<bucket>>      │ │  │ │ <<appsync>> │ │ <<dynamodb>> │ │
  *   │ └────────────────┘ └───────────────────────┘ │  │ └─────────────┘ └──────────────┘ │
  *   │                                              │  │                                  │
- *   │                  Website                     │  │               API                │
+ *   │                 SsrWebsite                   │  │               API                │
  *   └──────────────────────────────────────────────┘  └──────────────────────────────────┘
  *
- *    Modify by copy/paste via https://asciiflow.com
+ *       Modify by copy/paste via https://asciiflow.com
  * ```
  */
-export class WebStage extends Stage {
+export class KellendonkStage extends Stage {
   constructor(scope: Construct, id: string, props: WebStageProps = {}) {
     super(scope, id, props);
 
@@ -40,10 +41,8 @@ export class WebStage extends Stage {
 
     const stack = new Stack(this, 'Stack');
 
-    const apiTable = new ApiTable(stack, 'ApiTable');
-
     const api = new Api(stack, 'Api', {
-      table: apiTable,
+      table: new ApiTable(stack, 'ApiTable'),
     });
 
     const website = new SsrWebsite(stack, 'Website', {

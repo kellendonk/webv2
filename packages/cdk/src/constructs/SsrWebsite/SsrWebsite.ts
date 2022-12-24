@@ -28,9 +28,9 @@ export interface SsrWebsiteProps {
  */
 export class SsrWebsite extends Construct {
   /**
-   * The REST API origin where the lambda handlers reside.
+   * The origin where the lambda handlers reside.
    */
-  readonly ssrOrigin: aws_cloudfront.IOrigin;
+  readonly origin: aws_cloudfront.IOrigin;
 
   /**
    * The assets origin where all static assets live.
@@ -48,6 +48,8 @@ export class SsrWebsite extends Construct {
 
     const distDir = props.distDir;
 
+    // Calculate a hash for the website by staging its assets and taking the
+    // asset hash.
     const stagedDistAsset = new AssetStaging(this, 'StagedDistAsset', {
       sourcePath: distDir,
     });
@@ -59,6 +61,8 @@ export class SsrWebsite extends Construct {
       tracing: aws_lambda.Tracing.ACTIVE,
     });
 
+    // Reduce cold starts when someone hasn't visited the site in several
+    // minutes by sending a minimum amount of synthetic traffic to the lambda.
     new LambdaBlowtorch(this, 'HandlerWarming', {
       target: handler,
       desiredConcurrency: 3,
@@ -86,7 +90,7 @@ export class SsrWebsite extends Construct {
     });
 
     this.assetsOrigin = new aws_cloudfront_origins.S3Origin(assets);
-    this.ssrOrigin = new aws_cloudfront_origins.HttpOrigin(
+    this.origin = new aws_cloudfront_origins.HttpOrigin(
       `${httpApi.apiId}.execute-api.${Stack.of(this).region}.amazonaws.com`,
     );
   }
