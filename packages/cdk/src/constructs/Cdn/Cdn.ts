@@ -99,6 +99,19 @@ export class Cdn extends Construct {
       cachePolicy: aws_cloudfront.CachePolicy.CACHING_DISABLED,
       viewerProtocolPolicy:
         aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+      responseHeadersPolicy: new aws_cloudfront.ResponseHeadersPolicy(
+        this,
+        'ApiResponseHeadersPolicy',
+        {
+          corsBehavior: {
+            accessControlAllowCredentials: true,
+            accessControlAllowHeaders: ['*'],
+            accessControlAllowMethods: ['*'],
+            accessControlAllowOrigins: ['localhost', '127.0.0.1'],
+            originOverride: true,
+          },
+        },
+      ),
     });
 
     domainName?.bind(DomainNameBinding.cloudFront(distribution));
