@@ -25,7 +25,7 @@
       "options": {
         "commands": [
           {
-            "command": "cdk watch Kellendonk-Dev/** --hotswap -o dist/packages/cdk"
+            "command": "cdk watch Kellendonk-Dev/** --hotswap --method=direct -o dist/packages/cdk"
           }
         ]
       },

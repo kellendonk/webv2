@@ -99,13 +99,20 @@ export class Cdn extends Construct {
       cachePolicy: aws_cloudfront.CachePolicy.CACHING_DISABLED,
       viewerProtocolPolicy:
         aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-      // Originally, I wanted to allow only localhost in cross-origins, but
-      // attempting to create a ResponseHeadersPolicy with cors behaviors
-      // seems to be causing internal service errors on the AWS side as of
-      // 2022-12-24.
-      responseHeadersPolicy:
-        aws_cloudfront.ResponseHeadersPolicy
-          .CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT,
+      responseHeadersPolicy: new aws_cloudfront.ResponseHeadersPolicy(
+        this,
+        'ApiResponseHeadersPolicy',
+        {
+          corsBehavior: {
+            accessControlAllowCredentials: false,
+            accessControlAllowHeaders: ['*'],
+            accessControlAllowMethods: ['ALL'],
+            accessControlAllowOrigins: ['localhost', '127.0.0.1'],
+            accessControlMaxAge: Duration.seconds(600),
+            originOverride: true,
+          },
+        },
+      ),
     });
 
     domainName?.bind(DomainNameBinding.cloudFront(distribution));
