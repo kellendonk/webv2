@@ -1,10 +1,12 @@
 [
 #foreach( $result in $ctx.result.items )
 #set ( $comma = "#if($foreach.hasNext),#{else}#end" )
+  #set ( $subject = $util.urlDecode($result.PK.split("#", 2).get(1)) )
+  #set ( $interaction = $util.urlDecode($result.SK.split("#", 2).get(1)) )
   {
     "id": $util.toJson("${result.PK}#${result.SK}"),
-    "subject": $util.toJson($result.PK.split("#", 2).get(1)),
-    "interaction": $util.toJson($result.SK.split("#", 2).get(1)),
+    "subject": $util.toJson($subject),
+    "interaction": $util.toJson($interaction),
     "count": $util.toJson($result.InteractionCount)
   }$comma
 #end

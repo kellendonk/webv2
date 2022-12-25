@@ -1,9 +1,13 @@
+#set ( $encodedSubject = $util.urlEncode($context.arguments.subject) )
+#set ( $encodedInteraction = $util.urlEncode($context.arguments.interaction) )
+#set ( $pk = "Subject#$encodedSubject" )
+#set ( $sk = "Interaction#$encodedInteraction" )
 {
   "version" : "2017-02-28",
   "operation": "UpdateItem",
   "key": {
-    "PK": $util.dynamodb.toDynamoDBJson("Subject#${context.arguments.subject}"),
-    "SK": $util.dynamodb.toDynamoDBJson("Interaction#${context.arguments.interaction}")
+    "PK": $util.dynamodb.toDynamoDBJson($pk),
+    "SK": $util.dynamodb.toDynamoDBJson($sk)
   },
   "update": {
     "expression": "ADD InteractionCount :Increment",
