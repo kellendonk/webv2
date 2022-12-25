@@ -1,15 +1,16 @@
 type InteractionCount {
-  id: String!
+  id: ID!
+  subject: String!
   interaction: String!
   count: Int!
 }
 
 type Query {
-  getInteractions(id: String!): [InteractionCount!]!
+  getInteractions(subject: String!): [InteractionCount!]!
 }
 
 type Mutation {
-  addInteraction(id: String!, interaction: String!): InteractionCount!
+  addInteraction(subject: String!, interaction: String!): InteractionCount!
 }
 
 schema {

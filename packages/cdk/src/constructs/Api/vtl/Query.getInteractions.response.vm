@@ -2,7 +2,8 @@
 #foreach( $result in $ctx.result.items )
 #set ( $comma = "#if($foreach.hasNext),#{else}#end" )
   {
-    "id": $util.toJson($result.PK.split("#", 2).get(1)),
+    "id": $util.toJson("${result.PK}#${result.SK}"),
+    "subject": $util.toJson($result.PK.split("#", 2).get(1)),
     "interaction": $util.toJson($result.SK.split("#", 2).get(1)),
     "count": $util.toJson($result.InteractionCount)
   }$comma

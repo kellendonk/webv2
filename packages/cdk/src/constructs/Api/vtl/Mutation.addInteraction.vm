@@ -2,7 +2,7 @@
   "version" : "2017-02-28",
   "operation": "UpdateItem",
   "key": {
-    "PK": $util.dynamodb.toDynamoDBJson("Id#${context.arguments.id}"),
+    "PK": $util.dynamodb.toDynamoDBJson("Subject#${context.arguments.subject}"),
     "SK": $util.dynamodb.toDynamoDBJson("Interaction#${context.arguments.interaction}")
   },
   "update": {

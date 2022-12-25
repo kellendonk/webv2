@@ -4,7 +4,7 @@
   "query": {
     "expression": "PK = :PK",
     "expressionValues": {
-      ":PK": $util.dynamodb.toDynamoDBJson("Id#${context.arguments.id}")
+      ":PK": $util.dynamodb.toDynamoDBJson("Subject#${context.arguments.subject}")
     }
   }
 }
