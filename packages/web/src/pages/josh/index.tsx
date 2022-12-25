@@ -18,6 +18,7 @@ import { GradientText } from '../../components/GradientText';
 import joshProfile from '../../assets/josh-profile.jpg';
 import Image from 'next/image';
 import clsx from 'clsx';
+import { SubjectInteractions } from '../../components/SubjectInteractions';
 
 export function Page() {
   return (
@@ -35,8 +36,8 @@ export function Page() {
           Hi, I&apos;m <GradientText>Josh</GradientText>
         </HeroTitle>
 
-        <div className="flex mt-16 justify-center items-center gap-8 md:gap-16 flex-wrap md:flex-nowrap">
-          <div className="min-w-[250px]">
+        <div className="flex mt-16 justify-center items-stretch gap-8 md:gap-16 flex-wrap md:flex-nowrap">
+          <div className="min-w-[250px] flex flex-col justify-center">
             <Image
               src={joshProfile}
               alt="Josh's Picture"
@@ -62,6 +63,11 @@ export function Page() {
               </svg>
             </div>
           </div>
+
+          <div className="md:mt-7 min-w-full md:min-w-[50px] md:order-3 flex justify-center gap-4 md:flex-col md:justify-start md:items-start">
+            <SubjectInteractions subject="foo" />
+          </div>
+
           <div className="shrink text-left">
             <Para>
               I&apos;m a Cloud Solutions Architect and Software Developer from
