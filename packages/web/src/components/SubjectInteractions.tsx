@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { gql, useMutation, useQuery } from '@apollo/client';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFaceSmile } from '@fortawesome/free-solid-svg-icons';
 
-export interface PageVoterProps {
+export interface SubjectInteractionsProps {
   readonly subject: string;
 }
 
-export const SubjectInteractions = ({ subject }: PageVoterProps) => {
+export const SubjectInteractions = ({ subject }: SubjectInteractionsProps) => {
   const query = useQuery(GET_INTERACTIONS, {
     variables: { subject },
     pollInterval: 1000,

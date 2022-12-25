@@ -65,7 +65,7 @@ export function Page() {
           </div>
 
           <div className="md:mt-7 min-w-full md:min-w-[50px] md:order-3 flex justify-center gap-4 md:flex-col md:justify-start md:items-start">
-            <SubjectInteractions subject="foo" />
+            <SubjectInteractions subject="/josh" />
           </div>
 
           <div className="shrink text-left">
