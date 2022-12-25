@@ -104,7 +104,8 @@ export class Cdn extends Construct {
       // seems to be causing internal service errors on the AWS side as of
       // 2022-12-24.
       responseHeadersPolicy:
-        aws_cloudfront.ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS,
+        aws_cloudfront.ResponseHeadersPolicy
+          .CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT,
     });
 
     domainName?.bind(DomainNameBinding.cloudFront(distribution));
