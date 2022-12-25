@@ -107,7 +107,7 @@ export class Cdn extends Construct {
             accessControlAllowCredentials: false,
             accessControlAllowHeaders: ['*'],
             accessControlAllowMethods: ['ALL'],
-            accessControlAllowOrigins: ['localhost', '127.0.0.1'],
+            accessControlAllowOrigins: ['http://localhost', 'http://127.0.0.1'],
             accessControlMaxAge: Duration.seconds(600),
             originOverride: true,
           },
