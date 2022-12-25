@@ -35,13 +35,8 @@ function CustomApp({ Component, pageProps }: AppProps) {
 }
 
 const apolloClient = new apollo.ApolloClient({
-  // uri: 'https://www.kellendonk.ca/graphql',
-  uri: 'https://o6g4vydgzfgedbwbxipnok7c7y.appsync-api.ca-central-1.amazonaws.com/graphql',
-  headers: {
-    'x-api-key': 'da2-ybvuigoq55epjmjewaa753ks44',
-  },
+  uri: 'https://www.kellendonk.ca/graphql',
   cache: new apollo.InMemoryCache(),
-  connectToDevTools: true,
 });
 
 export default CustomApp;
