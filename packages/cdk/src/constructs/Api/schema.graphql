@@ -5,12 +5,17 @@ type InteractionCount {
   count: Int!
 }
 
+type AddInteractionResponse {
+  subject: String!
+  interaction: String!
+}
+
 type Query {
   getInteractions(subject: String!): [InteractionCount!]!
 }
 
 type Mutation {
-  addInteraction(subject: String!, interaction: String!): InteractionCount!
+  addInteraction(subject: String!, interaction: String!): AddInteractionResponse!
 }
 
 schema {

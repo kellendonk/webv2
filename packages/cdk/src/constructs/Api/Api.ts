@@ -9,6 +9,7 @@ import {
 } from 'aws-cdk-lib';
 import * as aws_appsync from '@aws-cdk/aws-appsync-alpha';
 import { join } from 'path';
+import { readFileSync } from 'fs';
 
 export interface ApiProps {
   /**
@@ -60,7 +61,9 @@ export class Api extends Construct {
       dataSource: tableDataSource,
       typeName: 'Mutation',
       fieldName: 'addInteraction',
-      requestMappingTemplate: vtl('Mutation.addInteraction.vm'),
+      requestMappingTemplate: vtl('Mutation.addInteraction.vm', {
+        $tableName: table.tableName,
+      }),
       responseMappingTemplate: vtl('Mutation.addInteraction.response.vm'),
     });
 
@@ -106,6 +109,18 @@ export class ApiTable extends aws_dynamodb.Table {
 /**
  * Create a mapping template from a vtl template file.
  */
-function vtl(subPath: string): aws_appsync.MappingTemplate {
-  return aws_appsync.MappingTemplate.fromFile(join(__dirname, 'vtl', subPath));
+function vtl(
+  subPath: string,
+  replacements: Record<string, string> = {},
+): aws_appsync.MappingTemplate {
+  const fileName = join(__dirname, 'vtl', subPath);
+
+  const initialValue = readFileSync(fileName, 'utf8');
+
+  const template = Object.entries(replacements).reduce(
+    (str, [match, replace]) => str.replaceAll(match, replace),
+    initialValue,
+  );
+
+  return aws_appsync.MappingTemplate.fromString(template);
 }

@@ -20,6 +20,12 @@ export type Scalars = {
   Float: number;
 };
 
+export type AddInteractionResponse = {
+  __typename?: 'AddInteractionResponse';
+  interaction: Scalars['String'];
+  subject: Scalars['String'];
+};
+
 export type InteractionCount = {
   __typename?: 'InteractionCount';
   count: Scalars['Int'];
@@ -30,7 +36,7 @@ export type InteractionCount = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addInteraction: InteractionCount;
+  addInteraction: AddInteractionResponse;
 };
 
 export type MutationAddInteractionArgs = {
@@ -70,11 +76,9 @@ export type MutationMutationVariables = Exact<{
 export type MutationMutation = {
   __typename?: 'Mutation';
   addInteraction: {
-    __typename?: 'InteractionCount';
-    id: string;
+    __typename?: 'AddInteractionResponse';
     subject: string;
     interaction: string;
-    count: number;
   };
 };
 
@@ -196,10 +200,8 @@ export const MutationDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'subject' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'interaction' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'count' } },
               ],
             },
           },

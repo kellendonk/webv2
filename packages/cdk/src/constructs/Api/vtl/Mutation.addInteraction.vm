@@ -1,13 +1,13 @@
-#set ( $encodedSubject = $util.urlEncode($context.arguments.subject) )
-#set ( $encodedInteraction = $util.urlEncode($context.arguments.interaction) )
-#set ( $pk = "Subject#$encodedSubject" )
-#set ( $sk = "Interaction#$encodedInteraction" )
-{
-  "version" : "2017-02-28",
+#set ($encodedSubject = $util.urlEncode($context.arguments.subject))
+#set ($encodedInteraction = $util.urlEncode($context.arguments.interaction))
+#set ($countPK = "Subject#$encodedSubject")
+#set ($countSK = "Interaction#$encodedInteraction")
+#set ($updateCount = {
+  "table": "$tableName",
   "operation": "UpdateItem",
   "key": {
-    "PK": $util.dynamodb.toDynamoDBJson($pk),
-    "SK": $util.dynamodb.toDynamoDBJson($sk)
+    "PK": { "S": $countPK },
+    "SK": { "S": $countSK }
   },
   "update": {
     "expression": "ADD InteractionCount :Increment",
@@ -15,4 +15,30 @@
       ":Increment": { "N": 1 }
     }
   }
-}
+})
+
+#set ($now = $util.time.nowISO8601())
+#set ($putLog = {
+  "table": "$tableName",
+  "operation": "PutItem",
+  "key": {
+    "PK": { "S": "EventStore" },
+    "SK": { "S": "$now#${util.autoId()}" }
+  },
+  "attributeValues": {
+    "action": $util.dynamodb.toDynamoDB("Mutation.addInteraction"),
+    "timestamp": $util.dynamodb.toDynamoDB($now),
+    "arguments": $util.dynamodb.toDynamoDB($context.arguments),
+    "identity": $util.dynamodb.toDynamoDB($context.identity),
+    "source": $util.dynamodb.toDynamoDB($context.source)
+  }
+})
+
+$util.toJson({
+  "version": "2018-05-29",
+  "operation": "TransactWriteItems",
+  "transactItems": [
+    $updateCount,
+    $putLog
+  ]
+})

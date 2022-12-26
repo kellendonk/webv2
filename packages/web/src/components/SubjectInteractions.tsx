@@ -98,10 +98,8 @@ const GET_INTERACTIONS = gql`
 const ADD_INTERACTION = gql`
   mutation Mutation($subject: String!, $interaction: String!) {
     addInteraction(subject: $subject, interaction: $interaction) {
-      id
       subject
       interaction
-      count
     }
   }
 `;

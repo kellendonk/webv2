@@ -15,7 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
   '\n  query Query($subject: String!) {\n    getInteractions(subject: $subject) {\n      id\n      subject\n      interaction\n      count\n    }\n  }\n':
     types.QueryDocument,
-  '\n  mutation Mutation($subject: String!, $interaction: String!) {\n    addInteraction(subject: $subject, interaction: $interaction) {\n      id\n      subject\n      interaction\n      count\n    }\n  }\n':
+  '\n  mutation Mutation($subject: String!, $interaction: String!) {\n    addInteraction(subject: $subject, interaction: $interaction) {\n      subject\n      interaction\n    }\n  }\n':
     types.MutationDocument,
 };
 
@@ -29,8 +29,8 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n  mutation Mutation($subject: String!, $interaction: String!) {\n    addInteraction(subject: $subject, interaction: $interaction) {\n      id\n      subject\n      interaction\n      count\n    }\n  }\n',
-): typeof documents['\n  mutation Mutation($subject: String!, $interaction: String!) {\n    addInteraction(subject: $subject, interaction: $interaction) {\n      id\n      subject\n      interaction\n      count\n    }\n  }\n'];
+  source: '\n  mutation Mutation($subject: String!, $interaction: String!) {\n    addInteraction(subject: $subject, interaction: $interaction) {\n      subject\n      interaction\n    }\n  }\n',
+): typeof documents['\n  mutation Mutation($subject: String!, $interaction: String!) {\n    addInteraction(subject: $subject, interaction: $interaction) {\n      subject\n      interaction\n    }\n  }\n'];
 
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
