@@ -25,6 +25,9 @@ jobs:
       - run: yarn test
       - run: yarn build
 
+      - name: Check for mutations
+        run: git diff --exit-code
+
       - uses: actions/upload-artifact@v3
         with:
           name: cdk
