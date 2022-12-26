@@ -41,7 +41,11 @@
     "build-codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "graphql-codegen"
+        "commands": [
+          "graphql-codegen",
+          "prettier packages/web/src/__generated__ -w"
+        ],
+        "parallel": false
       }
     },
     "serve": {
