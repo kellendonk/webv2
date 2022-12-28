@@ -22,12 +22,12 @@
   "table": "$tableName",
   "operation": "PutItem",
   "key": {
-    "PK": { "S": "EventStore" },
-    "SK": { "S": "$now#${util.autoId()}" }
+    "PK": { "S": $countPK },
+    "SK": { "S": "Event#$now#${util.autoId()}" }
   },
   "attributeValues": {
-    "action": $util.dynamodb.toDynamoDB("Mutation.addInteraction"),
-    "timestamp": $util.dynamodb.toDynamoDB($now),
+    "action": { "S": "Mutation.addInteraction" },
+    "timestamp": { "S": $now },
     "arguments": $util.dynamodb.toDynamoDB($context.arguments),
     "identity": $util.dynamodb.toDynamoDB($context.identity),
     "source": $util.dynamodb.toDynamoDB($context.source)
