@@ -1,5 +1,5 @@
 query Query {
-  getInteractions(id: "foo") {
+  getInteractions(subject: "/josh") {
     id
     interaction
     count
@@ -7,9 +7,8 @@ query Query {
 }
 
 mutation Mutation {
-  addInteraction(id: "foo", interaction: "baboon") {
-    id
+  addInteraction(subject: "foo", interaction: "❤️") {
+    subject
     interaction
-    count
   }
 }

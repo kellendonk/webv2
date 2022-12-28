@@ -4,8 +4,11 @@ import {
   aws_cloudfront_origins,
   aws_dynamodb,
   aws_logs,
+  Duration,
+  Expiration,
   Fn,
   RemovalPolicy,
+  Stack,
 } from 'aws-cdk-lib';
 import * as aws_appsync from '@aws-cdk/aws-appsync-alpha';
 import { join } from 'path';
@@ -34,8 +37,8 @@ export class Api extends Construct {
         removalPolicy: RemovalPolicy.DESTROY,
       });
 
-    const api = new aws_appsync.GraphqlApi(this, 'Graphql', {
-      name: 'KellendonkApi',
+    const api = new aws_appsync.GraphqlApi(this, 'Api', {
+      name: Stack.of(this).stackName,
       schema: aws_appsync.SchemaFile.fromAsset(
         join(__dirname, 'schema.graphql'),
       ),
@@ -45,11 +48,20 @@ export class Api extends Construct {
         fieldLogLevel: aws_appsync.FieldLogLevel.ALL,
         retention: aws_logs.RetentionDays.ONE_MONTH,
       },
+
+      authorizationConfig: {
+        defaultAuthorization: {
+          authorizationType: aws_appsync.AuthorizationType.API_KEY,
+          apiKeyConfig: {
+            expires: Expiration.after(Duration.days(365)),
+          },
+        },
+      },
     });
 
     const tableDataSource = api.addDynamoDbDataSource('Table', table);
 
-    api.createResolver('Query-getInteractions', {
+    api.createResolver('Query.getInteractions', {
       dataSource: tableDataSource,
       typeName: 'Query',
       fieldName: 'getInteractions',
@@ -57,7 +69,7 @@ export class Api extends Construct {
       responseMappingTemplate: vtl('Query.getInteractions.response.vm'),
     });
 
-    api.createResolver('Mutation-addInteraction', {
+    api.createResolver('Mutation.addInteraction', {
       dataSource: tableDataSource,
       typeName: 'Mutation',
       fieldName: 'addInteraction',
