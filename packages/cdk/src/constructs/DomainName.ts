@@ -164,6 +164,7 @@ class CognitoBinding extends DomainNameBinding {
         domainName: domainName.domainName,
         subjectAlternativeNames: domainName.subjectAlternativeNames,
         hostedZone: domainName.hostedZone,
+        region: 'us-east-1',
       },
     );
 
