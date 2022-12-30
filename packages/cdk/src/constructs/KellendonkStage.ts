@@ -71,7 +71,7 @@ export class KellendonkStage extends Stage {
       value: `https://${cdn.domainName}/`,
     });
 
-    new CfnOutput(stack, 'IdentityUser', {
+    new CfnOutput(stack, 'IdentityUrl', {
       value: identity.baseUrl,
     });
   }

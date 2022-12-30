@@ -167,7 +167,7 @@ class CognitoBinding extends DomainNameBinding {
       },
     );
 
-    const d = this.userPool.addDomain('Domain', {
+    const userPoolDomain = this.userPool.addDomain('Domain', {
       customDomain: {
         domainName: domainName.domainName,
         certificate,
@@ -175,7 +175,7 @@ class CognitoBinding extends DomainNameBinding {
     });
 
     new aws_route53.CnameRecord(domainName, `Cname-${domainName.domainName}`, {
-      domainName: d.cloudFrontDomainName,
+      domainName: userPoolDomain.cloudFrontDomainName,
       zone: domainName.hostedZone,
     });
   }
