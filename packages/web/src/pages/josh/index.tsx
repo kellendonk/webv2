@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faDiscord,
   faGithub,
+  faLinkedin,
   faMastodon,
   faSteam,
   faTelegram,
@@ -123,6 +124,12 @@ export function Page() {
           </TreeLink>
           <TreeLink href="https://twitter.com/eigenseries" icon={faTwitter}>
             Twitter
+          </TreeLink>
+          <TreeLink
+            href="https://www.linkedin.com/in/kellendonk"
+            icon={faLinkedin}
+          >
+            LinkedIn
           </TreeLink>
         </div>
       </section>
