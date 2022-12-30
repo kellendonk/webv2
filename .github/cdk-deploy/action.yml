@@ -35,5 +35,5 @@ runs:
     - run: cdk diff --app ${{ inputs.app }} --no-fail
       shell: bash
 
-    - run: cdk deploy --require-approval never --method direct --app ${{ inputs.app }}
+    - run: cdk deploy --require-approval never --app ${{ inputs.app }}
       shell: bash
