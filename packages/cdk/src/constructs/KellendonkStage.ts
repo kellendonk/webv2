@@ -4,10 +4,14 @@ import { SsrWebsite } from './SsrWebsite';
 import { Api, ApiTable } from './Api';
 import { DomainName, DomainNameOptions } from './DomainName';
 import { Cdn } from './Cdn';
+import { Identity } from './Identity';
 
 export interface WebStageProps extends StageProps {
   /** Give the CDN a domain name. */
   readonly domainName?: DomainNameOptions;
+
+  /** Give the identity service a domain name */
+  readonly identityDomainName?: DomainNameOptions;
 }
 
 /**
@@ -41,6 +45,12 @@ export class KellendonkStage extends Stage {
 
     const stack = new Stack(this, 'Stack');
 
+    const identity = new Identity(stack, 'Identity', {
+      domainName:
+        props.identityDomainName &&
+        new DomainName(stack, 'IdentityDomainName', props.identityDomainName),
+    });
+
     const api = new Api(stack, 'Api', {
       table: new ApiTable(stack, 'ApiTable'),
     });
@@ -59,6 +69,10 @@ export class KellendonkStage extends Stage {
 
     new CfnOutput(stack, 'Url', {
       value: `https://${cdn.domainName}/`,
+    });
+
+    new CfnOutput(stack, 'IdentityUser', {
+      value: identity.baseUrl,
     });
   }
 }

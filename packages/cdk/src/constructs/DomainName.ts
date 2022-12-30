@@ -1,6 +1,7 @@
 import {
   aws_certificatemanager,
   aws_cloudfront,
+  aws_cognito,
   aws_route53,
   aws_route53_targets,
 } from 'aws-cdk-lib';
@@ -81,6 +82,10 @@ export abstract class DomainNameBinding {
     return new CloudFrontBinding(distribution);
   }
 
+  static cognito(userPool: aws_cognito.UserPool): DomainNameBinding {
+    return new CognitoBinding(userPool);
+  }
+
   abstract bind(domainName: DomainName);
 }
 
@@ -143,5 +148,35 @@ class CloudFrontBinding extends DomainNameBinding {
       aRecord.node.addDependency(this.distribution);
       aaaaRecord.node.addDependency(this.distribution);
     }
+  }
+}
+
+class CognitoBinding extends DomainNameBinding {
+  constructor(private readonly userPool: aws_cognito.UserPool) {
+    super();
+  }
+
+  bind(domainName: DomainName) {
+    const certificate = new aws_certificatemanager.DnsValidatedCertificate(
+      this.userPool,
+      'Certificate',
+      {
+        domainName: domainName.domainName,
+        subjectAlternativeNames: domainName.subjectAlternativeNames,
+        hostedZone: domainName.hostedZone,
+      },
+    );
+
+    const d = this.userPool.addDomain('Domain', {
+      customDomain: {
+        domainName: domainName.domainName,
+        certificate,
+      },
+    });
+
+    new aws_route53.CnameRecord(domainName, `Cname-${domainName.domainName}`, {
+      domainName: d.cloudFrontDomainName,
+      zone: domainName.hostedZone,
+    });
   }
 }
