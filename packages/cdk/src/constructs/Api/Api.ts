@@ -53,7 +53,7 @@ export class Api extends Construct {
         defaultAuthorization: {
           authorizationType: aws_appsync.AuthorizationType.API_KEY,
           apiKeyConfig: {
-            expires: Expiration.after(Duration.days(365)),
+            expires: toStableExpiration(Expiration.after(Duration.days(365))),
           },
         },
       },
@@ -136,4 +136,14 @@ function vtl(
   );
 
   return aws_appsync.MappingTemplate.fromString(template);
+}
+
+/**
+ * Stabilizes an expiration, so it doesn't change as often.
+ */
+function toStableExpiration(expiration: Expiration): Expiration {
+  const target = expiration.date.getTime();
+  const thirtyDays = Duration.days(30).toMilliseconds();
+  const number = Math.floor(target / thirtyDays) * thirtyDays;
+  return Expiration.atTimestamp(number);
 }
