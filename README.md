@@ -2,7 +2,7 @@
 
 # Kellendonk.ca
 
-Repository containing all the Kellendonk.ca stuff.
+Repository containing all the [Kellendonk.ca](https://kellendonk.ca) stuff.
 
 ## Contributing
 
