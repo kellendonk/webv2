@@ -113,6 +113,7 @@ export class ApiTable extends aws_dynamodb.Table {
         type: aws_dynamodb.AttributeType.STRING,
       },
       billingMode: aws_dynamodb.BillingMode.PAY_PER_REQUEST,
+      pointInTimeRecovery: true,
       ...props,
     });
   }
