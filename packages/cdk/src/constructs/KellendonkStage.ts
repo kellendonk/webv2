@@ -54,7 +54,8 @@ export class KellendonkStage extends Stage {
     const webClient = identity.addWebClient('WebClient', {
       callbackUrls: [
         'http://localhost:4200/login/callback',
-        props.domainName && `https://${props.domainName}/login/callback`,
+        props.domainName &&
+          `https://${props.domainName.domainName}/login/callback`,
       ].filter(Boolean),
     });
 
