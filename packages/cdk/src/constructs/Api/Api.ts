@@ -13,6 +13,7 @@ import {
 import * as aws_appsync from '@aws-cdk/aws-appsync-alpha';
 import { join } from 'path';
 import { readFileSync } from 'fs';
+import { Identity } from '../Identity';
 
 export interface ApiProps {
   /**
@@ -20,6 +21,8 @@ export interface ApiProps {
    * @default - Creates its own
    */
   readonly table?: ApiTable;
+
+  readonly identity?: Identity;
 }
 
 /**
@@ -37,6 +40,25 @@ export class Api extends Construct {
         removalPolicy: RemovalPolicy.DESTROY,
       });
 
+    const additionalAuthorizationModes =
+      new Array<aws_appsync.AuthorizationMode>();
+
+    if (props.identity) {
+      additionalAuthorizationModes.push({
+        authorizationType: aws_appsync.AuthorizationType.API_KEY,
+        apiKeyConfig: {
+          expires: toStableExpiration(Expiration.after(Duration.days(365))),
+        },
+      });
+      additionalAuthorizationModes.push({
+        authorizationType: aws_appsync.AuthorizationType.USER_POOL,
+        userPoolConfig: {
+          userPool: props.identity.userPool,
+          defaultAction: aws_appsync.UserPoolDefaultAction.DENY,
+        },
+      });
+    }
+
     const api = new aws_appsync.GraphqlApi(this, 'Api', {
       name: Stack.of(this).stackName,
       schema: aws_appsync.SchemaFile.fromAsset(
@@ -51,11 +73,9 @@ export class Api extends Construct {
 
       authorizationConfig: {
         defaultAuthorization: {
-          authorizationType: aws_appsync.AuthorizationType.API_KEY,
-          apiKeyConfig: {
-            expires: toStableExpiration(Expiration.after(Duration.days(365))),
-          },
+          authorizationType: aws_appsync.AuthorizationType.IAM,
         },
+        additionalAuthorizationModes,
       },
     });
 

@@ -15,23 +15,24 @@ export interface IdentityProps {
  */
 export class Identity extends Construct {
   readonly baseUrl: string;
+  readonly userPool: aws_cognito.UserPool;
 
   constructor(scope: Construct, id: string, props: IdentityProps = {}) {
     super(scope, id);
 
     const stack = Stack.of(this);
 
-    const userPool = new aws_cognito.UserPool(this, 'UserPool', {
+    this.userPool = new aws_cognito.UserPool(this, 'UserPool', {
       userPoolName: stack.stackName,
       removalPolicy: RemovalPolicy.DESTROY,
     });
 
     const domainName = props.domainName;
     if (domainName) {
-      domainName.bind(DomainNameBinding.cognito(userPool));
+      domainName.bind(DomainNameBinding.cognito(this.userPool));
       this.baseUrl = `https://${domainName.domainName}/`;
     } else {
-      const domain = userPool.addDomain('Domain', {
+      const domain = this.userPool.addDomain('Domain', {
         cognitoDomain: {
           domainPrefix: `${stack.stackName.toLowerCase()}-${stack.account}`,
         },

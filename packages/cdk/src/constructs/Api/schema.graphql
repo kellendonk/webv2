@@ -1,21 +1,23 @@
-type InteractionCount {
+type InteractionCount @aws_api_key {
   id: ID!
   subject: String!
   interaction: String!
   count: Int!
 }
 
-type AddInteractionResponse {
+type AddInteractionResponse @aws_api_key {
   subject: String!
   interaction: String!
 }
 
 type Query {
   getInteractions(subject: String!): [InteractionCount!]!
+  @aws_api_key
 }
 
 type Mutation {
   addInteraction(subject: String!, interaction: String!): AddInteractionResponse!
+  @aws_api_key
 }
 
 schema {

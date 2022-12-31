@@ -53,6 +53,7 @@ export class KellendonkStage extends Stage {
 
     const api = new Api(stack, 'Api', {
       table: new ApiTable(stack, 'ApiTable'),
+      identity,
     });
 
     const website = new SsrWebsite(stack, 'Website', {

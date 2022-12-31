@@ -1,5 +1,5 @@
 query Query {
-  getInteractions(subject: "/josh") {
+  getInteractions(subject: "foo") {
     id
     interaction
     count
