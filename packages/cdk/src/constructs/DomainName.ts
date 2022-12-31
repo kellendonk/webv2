@@ -176,6 +176,7 @@ class CognitoBinding extends DomainNameBinding {
     });
 
     new aws_route53.CnameRecord(domainName, `Cname-${domainName.domainName}`, {
+      recordName: domainName.domainName,
       domainName: userPoolDomain.cloudFrontDomainName,
       zone: domainName.hostedZone,
     });
