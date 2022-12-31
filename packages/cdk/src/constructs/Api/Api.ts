@@ -2,6 +2,7 @@ import { Construct } from 'constructs';
 import {
   aws_cloudfront,
   aws_cloudfront_origins,
+  aws_cognito,
   aws_dynamodb,
   aws_logs,
   Duration,
@@ -13,7 +14,6 @@ import {
 import * as aws_appsync from '@aws-cdk/aws-appsync-alpha';
 import { join } from 'path';
 import { readFileSync } from 'fs';
-import { Identity } from '../Identity';
 
 export interface ApiProps {
   /**
@@ -22,7 +22,17 @@ export interface ApiProps {
    */
   readonly table?: ApiTable;
 
-  readonly identity?: Identity;
+  /**
+   * Provide info about this OAuth client so the public can authenticate and
+   * check the tokens issued against the given identity provider.
+   */
+  readonly webClientConfig: WebClientConfig;
+}
+
+export interface WebClientConfig {
+  readonly userPool: aws_cognito.IUserPool;
+  readonly authority: string;
+  readonly clientId: string;
 }
 
 /**
@@ -31,33 +41,16 @@ export interface ApiProps {
 export class Api extends Construct {
   readonly origin: aws_cloudfront.IOrigin;
 
-  constructor(scope: Construct, id: string, props: ApiProps = {}) {
+  constructor(scope: Construct, id: string, props: ApiProps) {
     super(scope, id);
 
-    const table =
-      props.table ??
+    const { webClientConfig, table } = props;
+
+    const apiTable =
+      table ??
       new ApiTable(this, 'Table', {
         removalPolicy: RemovalPolicy.DESTROY,
       });
-
-    const additionalAuthorizationModes =
-      new Array<aws_appsync.AuthorizationMode>();
-
-    if (props.identity) {
-      additionalAuthorizationModes.push({
-        authorizationType: aws_appsync.AuthorizationType.API_KEY,
-        apiKeyConfig: {
-          expires: toStableExpiration(Expiration.after(Duration.days(365))),
-        },
-      });
-      additionalAuthorizationModes.push({
-        authorizationType: aws_appsync.AuthorizationType.USER_POOL,
-        userPoolConfig: {
-          userPool: props.identity.userPool,
-          defaultAction: aws_appsync.UserPoolDefaultAction.DENY,
-        },
-      });
-    }
 
     const api = new aws_appsync.GraphqlApi(this, 'Api', {
       name: Stack.of(this).stackName,
@@ -75,11 +68,26 @@ export class Api extends Construct {
         defaultAuthorization: {
           authorizationType: aws_appsync.AuthorizationType.IAM,
         },
-        additionalAuthorizationModes,
+        additionalAuthorizationModes: [
+          {
+            authorizationType: aws_appsync.AuthorizationType.API_KEY,
+            apiKeyConfig: {
+              expires: toStableExpiration(Expiration.after(Duration.days(365))),
+            },
+          },
+          {
+            authorizationType: aws_appsync.AuthorizationType.USER_POOL,
+            userPoolConfig: {
+              userPool: webClientConfig.userPool,
+              defaultAction: aws_appsync.UserPoolDefaultAction.DENY,
+            },
+          },
+        ],
       },
     });
 
-    const tableDataSource = api.addDynamoDbDataSource('Table', table);
+    const tableDataSource = api.addDynamoDbDataSource('Table', apiTable);
+    const noneDataSource = api.addNoneDataSource('None');
 
     api.createResolver('Query.getInteractions', {
       dataSource: tableDataSource,
@@ -94,9 +102,20 @@ export class Api extends Construct {
       typeName: 'Mutation',
       fieldName: 'addInteraction',
       requestMappingTemplate: vtl('Mutation.addInteraction.vm', {
-        $tableName: table.tableName,
+        $tableName: apiTable.tableName,
       }),
       responseMappingTemplate: vtl('Mutation.addInteraction.response.vm'),
+    });
+
+    api.createResolver('Query.authInfo', {
+      dataSource: noneDataSource,
+      typeName: 'Query',
+      fieldName: 'authInfo',
+      requestMappingTemplate: vtl('Query.authInfo.vm'),
+      responseMappingTemplate: vtl('Query.authInfo.response.vm', {
+        $authority: webClientConfig.authority,
+        $clientId: webClientConfig.clientId,
+      }),
     });
 
     // Determine the api domain from the resource's GraphQLUrl attribute.

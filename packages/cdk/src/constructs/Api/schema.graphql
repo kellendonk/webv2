@@ -10,8 +10,16 @@ type AddInteractionResponse @aws_api_key {
   interaction: String!
 }
 
+type AuthInfo @aws_api_key {
+  authority: String!
+  clientId: String!
+}
+
 type Query {
   getInteractions(subject: String!): [InteractionCount!]!
+  @aws_api_key
+
+  authInfo: AuthInfo!
   @aws_api_key
 }
 

@@ -6,6 +6,13 @@ query Query {
   }
 }
 
+query Query2 {
+  authInfo {
+    authority
+    clientId
+  }
+}
+
 mutation Mutation {
   addInteraction(subject: "foo", interaction: "❤️") {
     subject

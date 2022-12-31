@@ -1,0 +1,4 @@
+$util.toJson({
+  "authority": "$authority",
+  "clientId": "$clientId"
+})

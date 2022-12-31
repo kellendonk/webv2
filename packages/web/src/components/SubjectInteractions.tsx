@@ -85,7 +85,7 @@ const InteractionButton = (props: InteractionButtonProps) => (
 );
 
 const GET_INTERACTIONS = gql`
-  query Query($subject: String!) {
+  query GetInteractions($subject: String!) {
     getInteractions(subject: $subject) {
       id
       subject
@@ -96,7 +96,7 @@ const GET_INTERACTIONS = gql`
 `;
 
 const ADD_INTERACTION = gql`
-  mutation Mutation($subject: String!, $interaction: String!) {
+  mutation AddInteraction($subject: String!, $interaction: String!) {
     addInteraction(subject: $subject, interaction: $interaction) {
       subject
       interaction

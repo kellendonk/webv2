@@ -51,9 +51,20 @@ export class KellendonkStage extends Stage {
         new DomainName(stack, 'IdentityDomainName', props.identityDomainName),
     });
 
+    const webClient = identity.addWebClient('WebClient', {
+      callbackUrls: [
+        'http://localhost:4200/login/callback',
+        props.domainName && `https://${props.domainName}/login/callback`,
+      ].filter(Boolean),
+    });
+
     const api = new Api(stack, 'Api', {
       table: new ApiTable(stack, 'ApiTable'),
-      identity,
+      webClientConfig: {
+        userPool: webClient.userPool,
+        authority: webClient.authority,
+        clientId: webClient.clientId,
+      },
     });
 
     const website = new SsrWebsite(stack, 'Website', {
