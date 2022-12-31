@@ -17,7 +17,7 @@ new KellendonkStage(app, 'Kellendonk-Production', {
     ...kellendonkCa,
   },
   identityDomainName: {
-    domainName: 'id.kellendonk.ca',
+    domainName: 'auth.kellendonk.ca',
     ...kellendonkCa,
   },
 });

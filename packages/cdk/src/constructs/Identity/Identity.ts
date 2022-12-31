@@ -23,10 +23,32 @@ export class Identity extends Construct {
 
     const stack = Stack.of(this);
 
-    this.userPool = new aws_cognito.UserPool(this, 'UserPool', {
+    this.userPool = new aws_cognito.UserPool(this, 'Users', {
       userPoolName: stack.stackName,
       removalPolicy: RemovalPolicy.DESTROY,
       selfSignUpEnabled: true,
+      signInCaseSensitive: false,
+      signInAliases: {
+        email: true,
+        phone: true,
+        username: true,
+        preferredUsername: true,
+      },
+      autoVerify: {
+        email: true,
+        phone: true,
+      },
+      standardAttributes: {
+        email: { required: true, mutable: true },
+        fullname: { required: true, mutable: true },
+        phoneNumber: { required: false, mutable: true },
+        preferredUsername: { required: false, mutable: true },
+      },
+    });
+
+    new aws_cognito.CfnUserPoolGroup(this, 'Admins', {
+      userPoolId: this.userPool.userPoolId,
+      groupName: 'admins',
     });
 
     const domainName = props.domainName;
@@ -36,7 +58,7 @@ export class Identity extends Construct {
     } else {
       const domain = this.userPool.addDomain('Domain', {
         cognitoDomain: {
-          domainPrefix: `${stack.stackName.toLowerCase()}-${stack.account}`,
+          domainPrefix: `${stack.stackName.toLowerCase()}-x-${stack.account}`,
         },
       });
 
