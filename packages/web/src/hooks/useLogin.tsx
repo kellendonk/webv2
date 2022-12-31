@@ -1,7 +1,6 @@
 import * as oidc from 'oidc-client-ts';
 import { gql, useQuery } from '@apollo/client';
 import { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 
 export function useLogin() {
   const userManager = useUserManager();
@@ -23,11 +22,18 @@ export function useLogin() {
 
 export function useLoginCallback() {
   const userManager = useUserManager();
+  const [error, setError] = useState<string>();
 
   useEffect(() => {
     if (!userManager) return;
-    userManager.signinPopupCallback();
+    userManager
+      .signinPopupCallback()
+      .catch((e) => setError(e instanceof Error ? e.message : String(e)));
   }, [userManager]);
+
+  return {
+    error,
+  };
 }
 
 export function useUserManager(): oidc.UserManager | undefined {

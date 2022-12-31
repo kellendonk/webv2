@@ -5,7 +5,7 @@ import { MainLayout } from '../../components/MainLayout';
 import React from 'react';
 
 export function Page() {
-  useLoginCallback();
+  const { error } = useLoginCallback();
 
   return (
     <MainLayout>
@@ -15,6 +15,8 @@ export function Page() {
 
       <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-20 text-center lg:py-32">
         <HeroTitle>Logging you in</HeroTitle>
+
+        {error && <p>{error}</p>}
       </section>
     </MainLayout>
   );
