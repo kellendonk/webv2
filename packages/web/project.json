@@ -42,10 +42,8 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "graphql-codegen",
-          "prettier packages/web/src/__generated__ -w"
-        ],
-        "parallel": false
+          "graphql-codegen"
+        ]
       }
     },
     "serve": {
