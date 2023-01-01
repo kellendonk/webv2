@@ -2,11 +2,11 @@ import React from 'react';
 import { MainLayout } from '../../components/MainLayout';
 import { HeroTitle } from '../../components/HeroTitle';
 import Head from 'next/head';
-import { useLogin } from '../../hooks/useLogin';
 import { GradientText } from '../../components/GradientText';
+import { useLoginContext } from '../../login/LoginContext';
 
 export function Page() {
-  const { user, error, login } = useLogin();
+  const loginContext = useLoginContext();
 
   return (
     <MainLayout>
@@ -23,12 +23,14 @@ export function Page() {
           Kellendonk <GradientText>login</GradientText>
         </HeroTitle>
 
-        <button onClick={login} className="rounded-xl border-2 p-2 my-10">
+        <button
+          onClick={loginContext.login}
+          className="rounded-xl border-2 p-2 my-10"
+        >
           Log In
         </button>
 
-        {error && <p>Error: {error}</p>}
-        {user && <pre>{JSON.stringify(user, null, 2)}</pre>}
+        {loginContext.accessToken}
       </section>
     </MainLayout>
   );

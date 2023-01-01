@@ -18,6 +18,16 @@
 })
 
 #set ($now = $util.time.nowISO8601())
+#set ($identity = {})
+#if ($context.identity)
+#set ($identity = {
+  "sub": $context.identity.sub,
+  "issuer": $context.identity.issuer,
+  "claims": $context.identity.claims,
+  "sourceIp": $context.identity.sourceIp,
+  "sub": $context.identity.sub
+})
+#end
 #set ($putLog = {
   "table": "$tableName",
   "operation": "PutItem",
@@ -29,7 +39,7 @@
     "action": { "S": "Mutation.addInteraction" },
     "timestamp": { "S": $now },
     "arguments": $util.dynamodb.toDynamoDB($context.arguments),
-    "identity": $util.dynamodb.toDynamoDB($context.identity),
+    "identity": $util.dynamodb.toDynamoDB($identity),
     "source": $util.dynamodb.toDynamoDB($context.source)
   }
 })

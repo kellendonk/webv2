@@ -12,8 +12,6 @@ export interface OAuthWebClientProps extends OAuthWebClientOptions {
 
 export class OAuthWebClient extends Construct {
   readonly clientId: string;
-  readonly authorizeUrl: string;
-  readonly tokenUrl: string;
   readonly userPool: aws_cognito.UserPool;
   readonly authority: string;
 
@@ -37,8 +35,6 @@ export class OAuthWebClient extends Construct {
     });
 
     this.clientId = this.client.userPoolClientId;
-    this.authorizeUrl = `${props.identity.baseUrl}/oauth2/authorize`;
-    this.tokenUrl = `${props.identity.baseUrl}/oauth2/token`;
     this.authority = this.userPool.userPoolProviderUrl;
   }
 }

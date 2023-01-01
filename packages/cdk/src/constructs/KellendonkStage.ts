@@ -1,7 +1,7 @@
 import { CfnOutput, Stack, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { SsrWebsite } from './SsrWebsite';
-import { Api, ApiTable } from './Api';
+import { NextWebsite, NextWebsiteCdnOrigin } from './NextWebsite';
+import { Api, ApiCdnOrigin, ApiTable } from './Api';
 import { DomainName, DomainNameOptions } from './DomainName';
 import { Cdn } from './Cdn';
 import { Identity } from './Identity';
@@ -68,16 +68,26 @@ export class KellendonkStage extends Stage {
       },
     });
 
-    const website = new SsrWebsite(stack, 'Website', {
+    const website = new NextWebsite(stack, 'Website', {
       distDir: 'dist/packages/web',
     });
 
-    const cdn = new Cdn(stack, 'Cdn', {
+    const domainName =
+      props.domainName && new DomainName(stack, 'DomainName', props.domainName);
+
+    const websiteOrigin = new NextWebsiteCdnOrigin(stack, 'WebsiteCdnOrigin', {
       website,
-      api,
-      domainName:
-        props.domainName &&
-        new DomainName(stack, 'DomainName', props.domainName),
+      domainName: domainName,
+    });
+
+    const apiOrigin = new ApiCdnOrigin(stack, 'ApiCdnOrigin', {
+      api: api,
+    });
+
+    const cdn = new Cdn(stack, 'Cdn', {
+      domainName,
+      defaultOrigin: websiteOrigin,
+      additionalOrigins: [apiOrigin],
     });
 
     new CfnOutput(stack, 'Url', {

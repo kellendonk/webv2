@@ -1,7 +1,7 @@
-import { cdnFunction } from './Cdn';
+import { webOriginRequestFnCode } from './NextWebsiteCdnOrigin';
 
-describe('cdnFunction', () => {
-  const rendered = cdnFunction({
+describe('webOriginRequestFnCode', () => {
+  const rendered = webOriginRequestFnCode({
     primaryDomain: 'www.example.com',
     websiteHash: 'FAKE_HASH',
   });

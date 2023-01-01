@@ -1,11 +1,11 @@
-import { useLoginCallback } from '../../hooks/useLogin';
+import { useUserManagerLoginCallback } from '../../login/useUserManagerState';
 import Head from 'next/head';
 import { HeroTitle } from '../../components/HeroTitle';
 import { MainLayout } from '../../components/MainLayout';
 import React from 'react';
 
 export function Page() {
-  const { error } = useLoginCallback();
+  const { error } = useUserManagerLoginCallback();
 
   return (
     <MainLayout>

@@ -1,7 +1,5 @@
 import { Construct } from 'constructs';
 import {
-  aws_cloudfront,
-  aws_cloudfront_origins,
   aws_cognito,
   aws_dynamodb,
   aws_logs,
@@ -39,7 +37,8 @@ export interface WebClientConfig {
  * Responsible for creating the GraphQL API.
  */
 export class Api extends Construct {
-  readonly origin: aws_cloudfront.IOrigin;
+  readonly apiKey: string;
+  readonly apiDomain: string;
 
   constructor(scope: Construct, id: string, props: ApiProps) {
     super(scope, id);
@@ -124,11 +123,8 @@ export class Api extends Construct {
     // https://z6lexrwz2vcyhmi5q7yshcgd5i.appsync-api.ca-central-1.amazonaws.com/graphql
     const apiDomain = Fn.select(2, Fn.split('/', api.graphqlUrl));
 
-    this.origin = new aws_cloudfront_origins.HttpOrigin(apiDomain, {
-      customHeaders: {
-        'x-api-key': api.apiKey,
-      },
-    });
+    this.apiKey = api.apiKey;
+    this.apiDomain = apiDomain;
   }
 }
 

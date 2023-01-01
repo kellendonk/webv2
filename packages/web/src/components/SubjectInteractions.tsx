@@ -8,6 +8,7 @@ export interface SubjectInteractionsProps {
 export const SubjectInteractions = ({ subject }: SubjectInteractionsProps) => {
   const query = useQuery(GET_INTERACTIONS, {
     variables: { subject },
+    pollInterval: 1,
   });
 
   const [addInteractionMutation] = useMutation(ADD_INTERACTION, {

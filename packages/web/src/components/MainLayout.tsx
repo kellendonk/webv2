@@ -5,9 +5,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import logo from '../assets/logo-mark.svg';
 import Image from 'next/image';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEdit,
+  faKey,
+  faSignIn,
+  faSignOut,
+} from '@fortawesome/free-solid-svg-icons';
+import { useLoginContext } from '../login/LoginContext';
 
 export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const loginContext = useLoginContext();
+
   const NavTextLink = (props: React.PropsWithChildren<{ href: string }>) => (
     <Link
       href={props.href}
@@ -49,6 +57,28 @@ export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
 
         <footer className="bg-black text-white shink-0">
           <div className="mx-auto max-w-7xl flex gap-4 justify-end items-center p-2">
+            {!loginContext.loggedIn && (
+              <button onClick={loginContext.login}>
+                <FontAwesomeIcon
+                  icon={faSignIn}
+                  height="20"
+                  className="min-h-[20px]"
+                  aria-label="Sign In"
+                />
+              </button>
+            )}
+
+            {loginContext.loggedIn && (
+              <button onClick={loginContext.logout}>
+                <FontAwesomeIcon
+                  icon={faSignOut}
+                  height="20"
+                  className="min-h-[20px]"
+                  aria-label="Sign Out"
+                />
+              </button>
+            )}
+
             <a
               href="https://github.com/kellendonk/webv2"
               target="_blank"

@@ -1,21 +1,19 @@
 import { LambdaBlowtorch } from '@wheatstalk/cdk-lambda-blowtorch';
 import {
   AssetStaging,
-  aws_cloudfront,
-  aws_cloudfront_origins,
-  aws_lambda,
-  aws_s3,
-  aws_s3_deployment,
+  aws_lambda as lambda,
+  aws_s3 as s3,
+  aws_s3_deployment as s3deploy,
   Duration,
   Stack,
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import * as aws_apigatewayv2 from '@aws-cdk/aws-apigatewayv2-alpha';
-import * as aws_apigatewayv2_integration from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
+import * as apiv2 from '@aws-cdk/aws-apigatewayv2-alpha';
+import * as apiv2_int from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 
 import { API_GATEWAY_REQUEST } from './warming-event';
 
-export interface SsrWebsiteProps {
+export interface NextWebsiteProps {
   /**
    * The directory containing the build output for the Next.js application.
    * We expect a Dockerfile in the directory, so we can build a container.
@@ -26,24 +24,18 @@ export interface SsrWebsiteProps {
 /**
  * Responsible for creating the hosting for a nextjs site.
  */
-export class SsrWebsite extends Construct {
-  /**
-   * The origin where the lambda handlers reside.
-   */
-  readonly origin: aws_cloudfront.IOrigin;
-
-  /**
-   * The assets origin where all static assets live.
-   */
-  readonly assetsOrigin: aws_cloudfront.IOrigin;
-
+export class NextWebsite extends Construct {
   /**
    * The hash of the asset backing the deployed website. You can use this as a
    * cache key.
    */
   readonly hash: string;
 
-  constructor(scope: Construct, id: string, props: SsrWebsiteProps) {
+  readonly httpDomain: string;
+
+  readonly assetsBucket: s3.Bucket;
+
+  constructor(scope: Construct, id: string, props: NextWebsiteProps) {
     super(scope, id);
 
     const distDir = props.distDir;
@@ -56,9 +48,9 @@ export class SsrWebsite extends Construct {
 
     this.hash = stagedDistAsset.assetHash;
 
-    const handler = new aws_lambda.DockerImageFunction(this, 'Handler', {
-      code: aws_lambda.DockerImageCode.fromImageAsset(distDir),
-      tracing: aws_lambda.Tracing.ACTIVE,
+    const handler = new lambda.DockerImageFunction(this, 'Handler', {
+      code: lambda.DockerImageCode.fromImageAsset(distDir),
+      tracing: lambda.Tracing.ACTIVE,
     });
 
     // Reduce cold starts when someone hasn't visited the site in several
@@ -70,28 +62,28 @@ export class SsrWebsite extends Construct {
       warmingPayload: JSON.stringify(API_GATEWAY_REQUEST),
     });
 
-    const httpApi = new aws_apigatewayv2.HttpApi(this, 'HttpApi', {
-      defaultIntegration:
-        new aws_apigatewayv2_integration.HttpLambdaIntegration(
-          'Handler',
-          handler,
-        ),
+    const httpApi = new apiv2.HttpApi(this, 'HttpApi', {
+      defaultIntegration: new apiv2_int.HttpLambdaIntegration(
+        'Handler',
+        handler,
+      ),
     });
 
-    const assets = new aws_s3.Bucket(this, 'Assets');
+    const assets = new s3.Bucket(this, 'Assets');
 
     // Deploy the static assets to the bucket. Note: We don't prune here. This
     // is so that users currently on the site don't fail when they try to load
     // static assets such as page js files.
-    new aws_s3_deployment.BucketDeployment(this, 'DeployStaticAssets', {
+    new s3deploy.BucketDeployment(this, 'DeployStaticAssets', {
       destinationBucket: assets,
       destinationKeyPrefix: '_next/static',
-      sources: [aws_s3_deployment.Source.asset(`${distDir}/.next/static`)],
+      sources: [s3deploy.Source.asset(`${distDir}/.next/static`)],
     });
 
-    this.assetsOrigin = new aws_cloudfront_origins.S3Origin(assets);
-    this.origin = new aws_cloudfront_origins.HttpOrigin(
-      `${httpApi.apiId}.execute-api.${Stack.of(this).region}.amazonaws.com`,
-    );
+    const region = Stack.of(this).region;
+    const apiDomain = `${httpApi.apiId}.execute-api.${region}.amazonaws.com`;
+
+    this.assetsBucket = assets;
+    this.httpDomain = apiDomain;
   }
 }
