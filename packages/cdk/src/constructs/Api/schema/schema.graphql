@@ -1,0 +1,16 @@
+schema {
+  query: Query
+  mutation: Mutation,
+}
+
+directive @aws_api_key on OBJECT | FIELD_DEFINITION
+directive @aws_cognito_user_pools(cognito_groups: [String]) on OBJECT | FIELD_DEFINITION
+
+type Query {
+  hmm: String
+}
+
+type Mutation {
+  hmm: String
+}
+

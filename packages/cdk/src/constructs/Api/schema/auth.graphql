@@ -1,0 +1,9 @@
+extend type Query {
+  authInfo: AuthInfo!
+  @aws_api_key @aws_cognito_user_pools
+}
+
+type AuthInfo @aws_api_key @aws_cognito_user_pools {
+  authority: String!
+  clientId: String!
+}

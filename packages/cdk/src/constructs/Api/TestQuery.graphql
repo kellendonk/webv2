@@ -19,3 +19,35 @@ mutation Mutation {
     interaction
   }
 }
+
+
+query GetGuestbookSignatures2234asdf {
+  getGuestBookSignatures(subject:"/josh") {
+    id
+    subject
+    date
+    image {
+      width
+      height
+      lines {
+        points {
+          x
+          y
+        }
+        brushColor
+        brushRadius
+      }
+    }
+  }
+}
+
+mutation AddGuestbookSignature {
+  addGuestBookSignature(subject: "/josh", image: {
+    width: 800
+    height: 600
+    lines: []
+  }) {
+    __typename
+    subject
+  }
+}

@@ -1,0 +1,14 @@
+#set ( $encodedSubject = $util.urlEncode($context.arguments.subject) )
+#set ( $pk = "Subject#$encodedSubject" )
+{
+  "version": "2017-02-28",
+  "operation": "Query",
+  "query": {
+    "expression": "PK = :PK AND begins_with(SK, :SK)",
+    "expressionValues": {
+      ":PK": $util.dynamodb.toDynamoDBJson($pk),
+      ":SK": $util.dynamodb.toDynamoDBJson("Signature#")
+    },
+  },
+  "scanIndexForward": false
+}

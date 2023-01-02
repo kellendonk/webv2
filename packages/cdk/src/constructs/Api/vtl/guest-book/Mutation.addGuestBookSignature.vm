@@ -1,0 +1,52 @@
+#set ($now = $util.time.nowISO8601())
+
+#set ($encodedSubject = $util.urlEncode($context.arguments.subject))
+#set ($pk = "Subject#$encodedSubject")
+
+#set ($putSignature = {
+  "table": "$tableName",
+  "operation": "PutItem",
+  "key": {
+    "PK": { "S": $pk },
+    "SK": { "S": "Signature#$now#${util.autoId()}" }
+  },
+  "attributeValues": {
+    "Date": { "S": "$now" },
+    "Image": $util.dynamodb.toDynamoDB($context.arguments.image)
+  }
+})
+
+#set ($identity = {})
+#if ($context.identity)
+#set ($identity = {
+  "sub": $context.identity.sub,
+  "issuer": $context.identity.issuer,
+  "claims": $context.identity.claims,
+  "sourceIp": $context.identity.sourceIp,
+  "sub": $context.identity.sub
+})
+#end
+#set ($putLog = {
+  "table": "$tableName",
+  "operation": "PutItem",
+  "key": {
+    "PK": { "S": $pk },
+    "SK": { "S": "Event#$now#${util.autoId()}" }
+  },
+  "attributeValues": {
+    "action": { "S": "Mutation.addGuestBookSignature" },
+    "timestamp": { "S": $now },
+    "arguments": $util.dynamodb.toDynamoDB($context.arguments),
+    "identity": $util.dynamodb.toDynamoDB($identity),
+    "source": $util.dynamodb.toDynamoDB($context.source)
+  }
+})
+
+$util.toJson({
+  "version": "2018-05-29",
+  "operation": "TransactWriteItems",
+  "transactItems": [
+    $putSignature,
+    $putLog
+  ]
+})

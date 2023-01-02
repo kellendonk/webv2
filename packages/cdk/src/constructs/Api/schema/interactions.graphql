@@ -1,0 +1,21 @@
+extend type Query {
+  getInteractions(subject: String!): [InteractionCount!]!
+  @aws_api_key @aws_cognito_user_pools
+}
+
+extend type Mutation {
+  addInteraction(subject: String!, interaction: String!): AddInteractionResponse!
+  @aws_api_key @aws_cognito_user_pools
+}
+
+type InteractionCount @aws_api_key @aws_cognito_user_pools {
+  id: ID!
+  subject: String!
+  interaction: String!
+  count: Int!
+}
+
+type AddInteractionResponse @aws_api_key @aws_cognito_user_pools {
+  subject: String!
+  interaction: String!
+}

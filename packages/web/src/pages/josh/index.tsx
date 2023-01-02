@@ -20,8 +20,15 @@ import joshProfile from '../../assets/josh-profile.jpg';
 import Image from 'next/image';
 import clsx from 'clsx';
 import { SubjectInteractions } from '../../components/SubjectInteractions';
+import {
+  GuestBookImageDisplay,
+  GuestBookInput,
+  useGuestBookImages,
+} from '../../components/GuestBookInput';
 
 export function Page() {
+  const guestBookImages = useGuestBookImages('/josh');
+
   return (
     <MainLayout>
       <Head>
@@ -131,6 +138,24 @@ export function Page() {
           >
             LinkedIn
           </TreeLink>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10 text-center lg:pay-16">
+        <HeroTitle>
+          Sign my <GradientText>guest book</GradientText>
+        </HeroTitle>
+
+        <div className="flex flex-wrap justify-center gap-14 mt-20 px-10 max-w-2xl mx-auto">
+          <GuestBookInput subject="/josh" />
+        </div>
+      </section>
+
+      <section className="my-10">
+        <div className="flex flex-wrap justify-center">
+          {guestBookImages.map((x, i) => (
+            <GuestBookImageDisplay key={i} image={x.image} width={200} />
+          ))}
         </div>
       </section>
     </MainLayout>

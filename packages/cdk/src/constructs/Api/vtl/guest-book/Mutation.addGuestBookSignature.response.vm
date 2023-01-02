@@ -1,0 +1,3 @@
+$util.toJson({
+  "subject": $context.arguments.subject
+})

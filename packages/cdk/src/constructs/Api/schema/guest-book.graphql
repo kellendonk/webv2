@@ -1,0 +1,60 @@
+extend type Query {
+  getGuestBookSignatures(subject: String!): [GuestBookSignature!]!
+  @aws_api_key @aws_cognito_user_pools
+}
+
+extend type Mutation {
+  addGuestBookSignature(subject: String!, image: InputGuestBookSignatureImage!): AddGuestBookSignatureResponse!
+  @aws_api_key @aws_cognito_user_pools
+}
+
+
+# Query types
+
+type GuestBookSignature @aws_api_key @aws_cognito_user_pools {
+  id: ID!
+  subject: String!
+  date: String!
+  image: GuestBookSignatureImage!
+}
+
+type GuestBookSignatureImage @aws_api_key @aws_cognito_user_pools {
+  width: Float!
+  height: Float!
+  lines: [GuestBookSignatureImageLine]!
+}
+
+type GuestBookSignatureImageLine @aws_api_key @aws_cognito_user_pools {
+  points: [GuestBookSignatureImageLinePoint]!
+  brushColor: String!
+  brushRadius: Float!
+}
+
+type GuestBookSignatureImageLinePoint @aws_api_key @aws_cognito_user_pools {
+  x: Float!
+  y: Float!
+}
+
+type AddGuestBookSignatureResponse @aws_api_key @aws_cognito_user_pools {
+  subject: String!
+  @aws_api_key @aws_cognito_user_pools
+}
+
+# Input types
+
+input InputGuestBookSignatureImage {
+  width: Float!
+  height: Float!
+  lines: [InputGuestBookSignatureImageLine]!
+}
+
+input InputGuestBookSignatureImageLine {
+  points: [InputGuestBookSignatureImageLinePoint]!
+  brushColor: String!
+  brushRadius: Float!
+}
+
+input InputGuestBookSignatureImageLinePoint {
+  x: Float!
+  y: Float!
+}

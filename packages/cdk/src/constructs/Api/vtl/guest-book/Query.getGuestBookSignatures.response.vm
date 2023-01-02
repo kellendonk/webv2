@@ -1,0 +1,12 @@
+#set ($results = [] )
+#foreach ($result in $ctx.result.items )
+  #set ($subject = $util.urlDecode($result.PK.split("#", 2).get(1)))
+  $util.qr($results.add({
+    "id": "${result.PK}#${result.SK}",
+    "subject": $subject,
+    "date": $result.Date,
+    "image": $result.Image
+  }))
+#end
+
+$util.toJson($results)

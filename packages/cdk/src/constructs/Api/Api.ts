@@ -10,8 +10,14 @@ import {
   Stack,
 } from 'aws-cdk-lib';
 import * as aws_appsync from '@aws-cdk/aws-appsync-alpha';
+import { ISchemaConfig } from '@aws-cdk/aws-appsync-alpha';
 import { join } from 'path';
+import * as fs from 'fs';
 import { readFileSync } from 'fs';
+import { glob } from 'glob';
+import { toStableExpiration } from '../util';
+import { buildSchema } from 'graphql/utilities';
+import { printSchemaWithDirectives } from '@graphql-tools/utils';
 
 export interface ApiProps {
   /**
@@ -51,11 +57,18 @@ export class Api extends Construct {
         removalPolicy: RemovalPolicy.DESTROY,
       });
 
+    const schema = mergeSchemaDir(join(__dirname, 'schema'));
+
     const api = new aws_appsync.GraphqlApi(this, 'Api', {
       name: Stack.of(this).stackName,
-      schema: aws_appsync.SchemaFile.fromAsset(
-        join(__dirname, 'schema.graphql'),
-      ),
+      schema: {
+        bind(api: aws_appsync.IGraphqlApi): ISchemaConfig {
+          return {
+            apiId: api.apiId,
+            definition: schema,
+          };
+        },
+      },
 
       xrayEnabled: true,
       logConfig: {
@@ -88,33 +101,68 @@ export class Api extends Construct {
     const tableDataSource = api.addDynamoDbDataSource('Table', apiTable);
     const noneDataSource = api.addNoneDataSource('None');
 
+    // Auth info
+
+    api.createResolver('Query.authInfo', {
+      dataSource: noneDataSource,
+      typeName: 'Query',
+      fieldName: 'authInfo',
+      requestMappingTemplate: vtl('auth/Query.authInfo.vm'),
+      responseMappingTemplate: vtl('auth/Query.authInfo.response.vm', {
+        $authority: webClientConfig.authority,
+        $clientId: webClientConfig.clientId,
+      }),
+    });
+
+    // Interactions
+
     api.createResolver('Query.getInteractions', {
       dataSource: tableDataSource,
       typeName: 'Query',
       fieldName: 'getInteractions',
-      requestMappingTemplate: vtl('Query.getInteractions.vm'),
-      responseMappingTemplate: vtl('Query.getInteractions.response.vm'),
+      requestMappingTemplate: vtl('interactions/Query.getInteractions.vm'),
+      responseMappingTemplate: vtl(
+        'interactions/Query.getInteractions.response.vm',
+      ),
     });
 
     api.createResolver('Mutation.addInteraction', {
       dataSource: tableDataSource,
       typeName: 'Mutation',
       fieldName: 'addInteraction',
-      requestMappingTemplate: vtl('Mutation.addInteraction.vm', {
+      requestMappingTemplate: vtl('interactions/Mutation.addInteraction.vm', {
         $tableName: apiTable.tableName,
       }),
-      responseMappingTemplate: vtl('Mutation.addInteraction.response.vm'),
+      responseMappingTemplate: vtl(
+        'interactions/Mutation.addInteraction.response.vm',
+      ),
     });
 
-    api.createResolver('Query.authInfo', {
-      dataSource: noneDataSource,
+    // Guest book
+
+    api.createResolver('Mutation.addGuestBookSignature', {
+      dataSource: tableDataSource,
+      typeName: 'Mutation',
+      fieldName: 'addGuestBookSignature',
+      requestMappingTemplate: vtl(
+        'guest-book/Mutation.addGuestBookSignature.vm',
+        {
+          $tableName: apiTable.tableName,
+        },
+      ),
+      responseMappingTemplate: vtl(
+        'guest-book/Mutation.addGuestBookSignature.response.vm',
+      ),
+    });
+
+    api.createResolver('Query.getGuestBookSignatures', {
+      dataSource: tableDataSource,
       typeName: 'Query',
-      fieldName: 'authInfo',
-      requestMappingTemplate: vtl('Query.authInfo.vm'),
-      responseMappingTemplate: vtl('Query.authInfo.response.vm', {
-        $authority: webClientConfig.authority,
-        $clientId: webClientConfig.clientId,
-      }),
+      fieldName: 'getGuestBookSignatures',
+      requestMappingTemplate: vtl('guest-book/Query.getGuestBookSignatures.vm'),
+      responseMappingTemplate: vtl(
+        'guest-book/Query.getGuestBookSignatures.response.vm',
+      ),
     });
 
     // Determine the api domain from the resource's GraphQLUrl attribute.
@@ -173,12 +221,12 @@ function vtl(
   return aws_appsync.MappingTemplate.fromString(template);
 }
 
-/**
- * Stabilizes an expiration, so it doesn't change as often.
- */
-function toStableExpiration(expiration: Expiration): Expiration {
-  const target = expiration.date.getTime();
-  const thirtyDays = Duration.days(30).toMilliseconds();
-  const number = Math.floor(target / thirtyDays) * thirtyDays;
-  return Expiration.atTimestamp(number);
+function mergeSchemaDir(schemaDir: string) {
+  const schemaFileList = glob.sync('**/*.graphql', { cwd: schemaDir });
+  const schemaSources = schemaFileList
+    .map((m) => fs.readFileSync(join(schemaDir, m), 'utf-8'))
+    .join('\n');
+
+  const schema = buildSchema(schemaSources);
+  return printSchemaWithDirectives(schema);
 }
