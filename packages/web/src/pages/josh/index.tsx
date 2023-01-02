@@ -39,7 +39,7 @@ export function Page() {
         />
       </Head>
 
-      <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10 pt-20 text-center lg:py-16 lg:pt-20">
+      <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8 sm:pt-20 lg:py-16 lg:pt-20 text-center">
         <HeroTitle>
           Hi, I&apos;m <GradientText>Josh</GradientText>
         </HeroTitle>
