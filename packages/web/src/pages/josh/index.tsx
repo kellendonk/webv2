@@ -152,7 +152,7 @@ export function Page() {
       </section>
 
       <section className="my-10">
-        <div className="flex flex-wrap justify-center">
+        <div className="flex px-4 flex-wrap justify-center gap-7">
           {guestBookImages.map((x, i) => (
             <GuestBookImageDisplay key={i} image={x.image} width={200} />
           ))}
