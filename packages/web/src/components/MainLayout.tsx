@@ -5,12 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import logo from '../assets/logo-mark.svg';
 import Image from 'next/image';
-import {
-  faEdit,
-  faKey,
-  faSignIn,
-  faSignOut,
-} from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faSignIn, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { useLoginContext } from '../login/LoginContext';
 
 export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
@@ -31,7 +26,7 @@ export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
     <>
       <div className="min-h-[100vh] flex flex-col justify-between">
-        <header className="py-10 shrink-0">
+        <header className="py-5 sm:py-10 shrink-0">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <nav className="relative z-50 flex justify-between">
               <Link aria-label="Home" href="/" className="flex items-center">
