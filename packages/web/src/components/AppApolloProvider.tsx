@@ -5,6 +5,8 @@ import { useLoginContext } from '../login/LoginContext';
 export function AppApolloProvider(props: React.PropsWithChildren): JSX.Element {
   const { accessToken } = useLoginContext();
 
+  const uri = process.env.NEXT_PUBLIC_GRAPHQL_URI ?? '/graphql';
+
   const apolloClient = useMemo(() => {
     const headers: Record<string, string> = {};
     if (accessToken) {
@@ -12,11 +14,11 @@ export function AppApolloProvider(props: React.PropsWithChildren): JSX.Element {
     }
 
     return new apollo.ApolloClient({
-      uri: process.env.NEXT_PUBLIC_GRAPHQL_URI ?? '/graphql',
+      uri,
       headers,
       cache: new apollo.InMemoryCache(),
     });
-  }, [accessToken]);
+  }, [uri, accessToken]);
 
   return (
     <apollo.ApolloProvider client={apolloClient}>
