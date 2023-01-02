@@ -21,7 +21,9 @@ export function GuestBookInput(props: { subject: string }): JSX.Element {
   return <GuestBookIllustrator save={onSave} />;
 }
 
-export function useGuestBookImages(subject: string): [] {
+export function useGuestBookImages(
+  subject: string,
+): Array<{ image: GuestBookImage }> {
   const items = useQuery(GET_GUEST_BOOK_SIGNATURES, {
     variables: {
       subject,
