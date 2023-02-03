@@ -5,7 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import logo from '../assets/logo-mark.svg';
 import Image from 'next/image';
-import { faEdit, faSignIn, faSignOut } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEdit,
+  faPersonFalling,
+  faSignIn,
+  faSignOut,
+} from '@fortawesome/free-solid-svg-icons';
 import { useLoginContext } from '../login/LoginContext';
 
 export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
@@ -35,13 +40,13 @@ export const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
               </Link>
 
               <div className="flex gap-5">
-                <NavTextLink href="https://github.com/misterjoshua">
-                  <FontAwesomeIcon icon={faGithub} width={20} />
-                  misterjoshua
+                <NavTextLink href="/josh">
+                  <FontAwesomeIcon icon={faPersonFalling} width={20} />
+                  Josh
                 </NavTextLink>
                 <NavTextLink href="https://github.com/lineape">
                   <FontAwesomeIcon icon={faGithub} width={20} />
-                  lineape
+                  Eli
                 </NavTextLink>
               </div>
             </nav>
